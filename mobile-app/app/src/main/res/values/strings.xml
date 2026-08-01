@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ppInk Mobile</string>
+    <string name="btn_connect">Connect</string>
+    <string name="btn_scan_qr">Scan QR Code</string>
+    <string name="btn_start_ble">Start BLE Server</string>
+    <string name="btn_stop_ble">Stop BLE Server</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_connecting">Connecting...</string>
+    <string name="status_connected">Connected</string>
+    <string name="mode_drawing">Drawing</string>
+    <string name="mode_cursor">Cursor</string>
+    <string name="toast_connected">Connected to ppInk</string>
+    <string name="toast_disconnected">Disconnected</string>
+    <string name="toast_scan_failed">QR scan failed: {0}</string>
+</resources>

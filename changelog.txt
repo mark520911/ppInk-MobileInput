@@ -1,0 +1,342 @@
+p1.9
+=================
+---> RC1
+* fix : miscelanous (see commits)
+* enh : Add capability to edit filling of  drawings* enh : add Number sub tools
+* enh : add MEASURE_SAVE_SCALE option
+* enh : Add Measure during drawing and scale redefinition
+* enh : allow to define hotspot for  cliparts
+* enh : extend to 1000 images in clipart
+* enh : add defaults
+* enh : allow ppInk to be run from read only folder with various config folder
+* new : align stamps to the stroke path
+* new : Add Pages feature(#258)
+* doc : add lituanian translation (part)
+* doc : update zh-tw(thx to @cmhdream)
+* new : options to work with rescaled cursor/arrows/cliparts
+* fix : add wait cursor when opening slow panels in options
+* new : Add Scaling on cursor and images
+* enh : display Dimensions on rectangles and ellipses
+* enh : fading in dashed/straight line (#245)
+* enh : Complete introduction of #234
+* fix : comments line copied during ini upgrade
+* new : add secondary page pens
+* fix : wrong tooltip on scale/rot secondarytool
+* fix : Line of Pattern not correct with fast move
+* doc : fix/rename httpRequests
+* fix : disabling Magnet no more working
+* enh : add default config and translations
+* fix : incorrect hints for move/scale buttons
+* fix : issue with directional magnetic effect
+* fix : error because missing length
+* fix : magnetic angle fixed/enhanced
+* enh : apply in progress options when starting 
+* new : engage line when pressing shift or ctrl in handfree
+* fix : crash when pasting from clipboard to clipart
+* fix : error during arrow with very short press
+* fix : issues with regional formats using comma
+* enh : add option to keep toolbar unfolded in pointer mode
+* fix : correct config.ini in international context
+
+p1.8
+=================
+---> p1.8.3
+* fix : Cursor not correct when exiting pointer mode with keys(#183 bottom)
+* fix : exit pointer mode when clicking on other app (#183)
+
+---> p1.8.2
+* fix : rest api issue on width
+* new : add option to keep toolbar folded at open(#183)
+* doc : update id-in.txt (thx to @onyet)
+* enh : allow global shortcut without key modifiers
+* fix : edit restored text (#176)
+* mnt: centralize default language in en-us.txt
+* new : can define snapshot filename
+* fix : connection to OBS no more working
+* new : add M3U index files
+* doc : add persian language translation (thx to @smn7231)
+* fix : crash when cliparts disabled
+* fix : Crash due to incomplete translations
+* fix : Odd Behavior with alt+tab
+* new : Ease selection difficult in dense area
+* new : Add option in config.ini to erase when losing focus
+* new : create ppInkS (without REST API nor OBS connection)
+* fix : API to set line to stroke not working
+* new : allow to Rotate text 
+* new : updated set of icons (thanks to @rexelbartolome)
+
+---> RC1
+* enh : UI improvement : icons refreshed / Magnetic angle configurable / Window Mode border color configurable
+* new : add new drawing in arrow heads allowing multiple customizable shapes
+* new : add Spot mode to hide all but around cursor (configurable through options/general)
+* new : add new filling to paint outside of shapes
+* new : add tool to draw strokes of patterns
+* fix : clear fickering artefacts during dynamic zoom on screen borders.
+* fix : moving toolbar eased.
+* enh : variable width strokes(drawn with tablet) are now saved/reloaded.
+* enh : right click with clipart selected plots the image centered on the cursor
+* new : add resize and rotate tools
+* enh : add option (on pen tab) to allow to change line style through click (or hotkey) on an already selected pen
+* enh : add option (on hotkey tab) to Enh to select which Linestyle are accessible through Linestyle Hotkey 
+* fix : multiple fixes, see commits history for details
+
+p1.7 (RC1)	
+=================
+
+---> RC1
+* New : Allow to change pen color/width on selection
+* New : Alt as temporary now applies to line style(dashed) and fading activation
+* New : add animations from APNG/animated GIF ; time or loop can be defined in filename in square brackets
+* Enh : allow tab/delete/backspace in hotkeys; ctrl+shitft+delete or ctrl+shift+backspare to clean current hotkey
+* Enh : arrow head grows/shrinks when pen width increases/decreases
+* New : add HSI square in pen dialog
+* Enh : total length reported with multiple strokes selected
+* New : Add multiple selection and Lasso mode with shortcut and Rest API
+* Enh : Add option to swap long and short press to reach snapshot and exit and snapshot and continue
+* Enh : Mousewheel changes font size with number tool
+* Enh : add hotkeys for save/load strokes 
+* fix : multiple fixes, see commits history for details
+
+p1.6 (RC1)	
+=================
+
+---> RC1
+* new : add LineStyle (Stroke(taking into accountDash/Dot/Dash)
+* new : add measures indications upon move / erase buttons
+* new : add color picker (including transparency adjustment through mouse wheel)
+* new : add option to display pens on two lines
+* enh : prevent background moving in pan (still possible in move 1 stroke)
+* new : Add shortcuts to edit pens
+* new : Add option/capability to snapshot only strokes and ignore the background
+* new : Add Shortcut to increase/decrease pen width
+* new : option to disable smoothing (mainly for use with pen or touchscreen)
+* New : add REST interface to control ppInk from remote programs/tools(Streamdesk / Matric / Touchportal...)
+* New : add solution to exit a crash and add debug window to ease support
+* New : add option to display secondary toolbar (to access all fillings)
+* New : add fading shortcut and indication on keys
+* Upg : Escape exit inking independant of shortcut setup
+* Upg : Move to x64
+* Major Fix : memory leak
+* fix : multiple fixes, see commits history
+
+	p1.5 (RC2)
+=================
+---> RC2
+* new : Add multiple snapshots in pointer mode for advanced drawings with configurable keys (between alt/shift/control)
+* enh : add option to swap between wheel and shift+wheel (between width adjust and pen selection)
+* new : shift+mousewheel selects pen (configurable see above)
+* enh: Start Inking when selecting ppInk with Alt+Tab
+* enh : ctrl+enter validates and close text input
+* translated : arabic added (thanks to @eamayreh)
+* new : window mode (allow restricted area to interact and freeing mouse (wheel and clicks) elsewhere)
+* fix : multiple fixes, see commits history
+
+---> beta1
+* new icone but you can still deploy your own
+* new : add zoom capability : both dynamic magnifier and freezed to full screen.
+* new : fading color(stroke dissapear after some time)
+* new : toolbar orientation can be configured
+* new : add save/restore strokes 
+* new : implement keyboard shortcut for pen selection in rotation 
+* Enh: distinguish Tag and Text default Font
+* New : Add frame/background to Text & Numbering
+* New : add selection highlighting for edit/move/copy/erase
+* New : add direct access cliparts buttons
+* Upg : improve W7 compatibility
+
+p1.4 (alpha1)
+=================
+---> alpha1
+* New : clipart tool added
+* Fix : toolbar color adjustable with transparency
+
+p1.3 (alpha3)
+=================
+---> alpha3
+* New : Buttons and background color customisable
+* New : Customisable keyboard shortcuts for docking/undocking and closing
+* New : Alt+Tab engages/disengages Pointer mode and also introduces automatic toolbar folding in those conditions
+* Enh : Cursors management has been improved and allow customisations
+* various fixes (see commits)
+---> alpha2
+* Fix : prevent exception raised when opening toolbar (tasks asyncronocity)
+* New : long click on edit to modify default font for the session
+* Fix : prevent exception raised when opening toolbar (tasks asyncronocity)
+---> alpha1
+* New(alpha) : integration with Obs and FFmpeg for video recording.
+* New : show red arrow ( or customed file) temporarily when alt key is down
+* New : loading Cursor.ico and FloatingCall.png next in exe folder is avaible
+* Fix : decimal serarator fixed include fix loading toolbar height
+* Translation : add turkish and Indonesian
+* various fixes (see commits)
+p1.2 (RC2)
+=================
+* New : MouseWheel to change pen size
+* New : add capability to create a white/gray(customisable)/black board.
+* New : add toolbarheight adjustments in option dialog (was already in config files)
+* New : add new dialog for pen definition with colorpicker
+* New : add pen adjustment dialog access on pen buttons through long click
+* New : add option to apply defined pen width at selection even if pen width cab be modified
+--->RC1
+* New option:to engage capture when opening the toolbar
+* Alt+ capability added for temporary comman 
+* report changes from gInk 1.1 (see commits)
+* various fixes (see commits)
+* add --startInking argument to start inking immediately
+
+p1.1 (RC3 @Aug. 16,2020)
+=================
+--->RC3 and before (see readme.md)
+* renamed to ppInk
+* add rect/oval/arrow/line/text/numbers tools
+* add filling options
+* add magnet effect
+* prevent multiple instances and allow starting argument
+* add floating icon
+
+
+v1.0.9 (Apr. 3, 2020)
+=================
+- Better handling of UI layout for multiple displays of unmatched DPI.
+- Fix a rare crash which occurs at startup due to path problem. 
+
+v1.0.8 (Mar. 25, 2020)
+=================
+- Jump to the snapshot file when clicking the Windows tip balloon after taking a snapshot.
+- Less CPU usage when dragging to take a snapshot.
+- Fix a rare crash which occurs upon selecting eraser.
+- Fix a rare crash which occurs at startup due to the language folder not found.
+- Russian language.
+
+v1.0.7 (Feb. 8, 2020)
+=================
+- French language.
+- Italian language.
+
+v1.0.6 (Feb. 2, 2020)
+=================
+- German language.
+- Traditional Chinese language.
+
+v1.0.5 (Dec. 24, 2019)
+=================
+- Slightly reduce the size of canvas to unblock mouse interaction with hidden (as well as non-hidden) windows taskbar.
+- Polish language. 
+- Czech language.
+
+v1.0.4 (Nov. 1, 2019)
+=================
+- Portuguese language.
+
+v1.0.3 (Oct. 19, 2019)
+=================
+- Fix a hotkey bug.
+
+v1.0.2 (Oct. 18, 2019)
+=================
+- Thai language.
+- Japanese language.
+
+v1.0.1 (Oct. 10, 2019)
+=================
+- Slovak language.
+
+v1.0.0 (Oct. 9, 2019)
+=================
+- Support localization.
+
+v0.6.0 (Jun. 30, 2019)
+=================
+- Add hotkey options for pens and tools.
+- Add a button to pan (move) inks.
+- Add a button to temporarily hide inks.
+- Add an option to enable pen and tool hotkeys in mouse pointer mode.
+- Allow dragging the toolbar (default is off, experimental).
+- Fix a visual bug on rim of semi-transparent inks.
+- Fix missing inks around the toolbar when the toolbar is moving. 
+- Fix disappearing and random appearing of small tail of inks.
+- Fix the default position of the toolbar when the Windows taskbar is on top of screen.
+- The global hotkey now switches between mouse pointer mode and the last used pen.
+
+v0.5.4 (Dec. 18, 2018)
+=================
+- Fix pointer mode on specific multiple display configurations.
+- Hide forms from alt-tab switcher (contributed by kohanyirobert).
+
+v0.5.3 (Oct. 6, 2018)
+=================
+- Fix eraser for touchscreen and stylus.
+
+v0.5.2 (Sep. 24, 2018)
+=================
+- Fix snapshot on specific multiple display configurations (thanks to pubpub-zz).
+- Fix some multiple display related issues (thanks to pubpub-zz).
+- Add an option in config.ini to immediately close after snapshot (contributed by pubpub-zz).
+
+v0.5.1 (Jun. 29, 2018)
+=================
+- Add a pen-tip mouse cursor as an option when drawing.
+- Fix dragging on pen width panel.
+
+v0.5.0 (May. 30, 2018)
+=================
+- Add options window.
+- Add a global pen width control panel which, if enabled, overrides width setting of each pen.
+- Add hotkeys for each tool during drawing (contributed by MrBricodage).
+- Add a crosshair mouse cursor during taking snapshot.
+- Save undo history when exit drawing, for restoring inks after accidental exit.
+- Add a new visual tell of which pen is selected.
+
+v0.4.1 (Mar. 13, 2017)
+=================
+- Change default pen colors.
+- Fix tray icon size.
+
+v0.4.0 (Jan. 3, 2017)
+=================
+- Multiple level undo (new feature).
+- Save snapshots to %USERPROFILE%/Pictures/gInk (new feature).
+- Show a balloon for browsing the snapshot file location.
+- Change pen icons.
+- Fix incorrect snapshot area when the DPI setting is not at 100%.
+- Fix a crash that occurs rarely at the first stroke.
+
+v0.3.3 (Jul. 10, 2016)
+=================
+- Change system tray icon size.
+- Do not quit drawing after snapshot if there are inks.
+
+v0.3.2 (Feb. 1, 2016)
+=================
+- Click through mode has a dedicated button now.
+- Add two new pens, to a total of five.
+- Add an entry to pen settings.
+
+v0.3.1 (Feb. 1, 2016)
+=================
+- Fix various minor graphical glitches.
+
+v0.3.0 (Feb. 1, 2016)
+=================
+- Click through mode (new feature), triggered when docked.
+
+v0.2.2 (Jan. 18, 2016)
+=================
+- Fix slowness and delay when there are too many inks.
+
+v0.2.1 (Jan. 17, 2016)
+=================
+- Fix snapshot not capturing inks in windows 7.
+
+v0.2.0 (Jan. 17, 2016)
+=================
+- Snapshot to clipboard (new feature).
+- Dock (new feature).
+
+v0.1.1 (Jan. 17, 2016)
+=================
+- CPU usage greatly reduced when drawing.
+
+v0.1 (Jan. 15, 2016)
+=================
+- First alpha release.

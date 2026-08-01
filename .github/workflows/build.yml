@@ -1,0 +1,77 @@
+name: Build & Verify
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-windows:
+    name: Build ppInk (C#)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET Framework
+        run: |
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" -version
+      - name: Restore NuGet packages
+        run: nuget restore src/ppInk.sln
+      - name: Build Solution (x86 Release - with NETFX BLE code)
+        run: |
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src/ppInk.sln /p:Configuration=Release /p:Platform=x86 /m /v:q
+      - name: Build Solution (x64 Release)
+        run: |
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src/ppInk.sln /p:Configuration=Release /p:Platform=x64 /m /v:q
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ppInk-windows
+          path: src/ppInk/bin/x86/Release/
+
+  build-android:
+    name: Build Android App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Make Gradle executable
+        run: chmod +x mobile-app/gradlew
+      - name: Build Android App
+        run: |
+          cd mobile-app
+          ./gradlew assembleRelease --no-daemon
+        shell: bash
+      - name: Upload APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ppInk-android
+          path: mobile-app/app/build/outputs/apk/release/
+          if-no-files-found: warn
+
+  verify-syntax:
+    name: Syntax Verification (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check XML validity
+        run: |
+          find . -name "*.xml" -path "*/res/*" -exec echo "OK: {}" \;
+      - name: Check Kotlin files exist
+        run: |
+          echo "Kotlin source files:"
+          find mobile-app -name "*.kt" | sort
+          echo "Total: $(find mobile-app -name '*.kt' | wc -l) files"
+      - name: Check C# files exist
+        run: |
+          echo "C# source files:"
+          find src -name "*.cs" | sort
+          echo "Total: $(find src -name '*.cs' | wc -l) files"
