@@ -45,40 +45,28 @@ namespace gInk
         {
             try
             {
-                RealMain(args);
-            }
-            catch (Exception ex)
-            {
-                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ppInk.log");
-                try { File.AppendAllText(logPath, "FATAL: " + ex + Environment.NewLine); } catch { }
-                MessageBox.Show("Startup error:\n" + ex.Message + "\n\nLog: " + logPath, "ppInk", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        static void RealMain(string[] args)
-        {
-            // force loading of local DLL 
-            Console.WriteLine("version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + " built on " + Build.Timestamp);
-            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");  // This ensure proper String processing whatever Operating Language
-            AppDomain customDomain = AppDomain.CreateDomain("IsolatedDomain", null, new AppDomainSetup
-            {
-                ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
-                PrivateBinPath = AppDomain.CurrentDomain.BaseDirectory,
-                DisallowBindingRedirects = true,
-                DisallowCodeDownload = true,
-                DisallowPublisherPolicy = true
-            });
-            customDomain.AssemblyResolve += (sender, _args) =>
-            {
-                Console.WriteLine("!!!!!!!"+_args.Name);
-                if (_args.Name.StartsWith("Microsoft.Ink,"))
+                // force loading of local DLL
+                Console.WriteLine("version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + " built on " + Build.Timestamp);
+                Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");  // This ensure proper String processing whatever Operating Language
+                AppDomain customDomain = AppDomain.CreateDomain("IsolatedDomain", null, new AppDomainSetup
                 {
-                    string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "microsoft.ink.dll");
-                    Console.WriteLine("try to force local loading of microsoft.ink");
-                    return Assembly.LoadFrom(localPath);
-                }
-                return null;
-            };
+                    ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
+                    PrivateBinPath = AppDomain.CurrentDomain.BaseDirectory,
+                    DisallowBindingRedirects = true,
+                    DisallowCodeDownload = true,
+                    DisallowPublisherPolicy = true
+                });
+                customDomain.AssemblyResolve += (sender, _args) =>
+                {
+                    Console.WriteLine("!!!!!!!"+_args.Name);
+                    if (_args.Name.StartsWith("Microsoft.Ink,"))
+                    {
+                        string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "microsoft.ink.dll");
+                        Console.WriteLine("try to force local loading of microsoft.ink");
+                        return Assembly.LoadFrom(localPath);
+                    }
+                    return null;
+                };
             // Charge et ex�cute votre code dans le domaine personnalis�
             string pth = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "microsoft.ink.dll");
             Console.WriteLine(pth);
@@ -168,7 +156,14 @@ namespace gInk
 
             Application.Run();
             FreeConsole();
-		}
+        }
+        catch (Exception ex)
+        {
+            string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ppInk.log");
+            try { File.AppendAllText(logPath, "FATAL: " + ex + Environment.NewLine); } catch { }
+            MessageBox.Show("Startup error:\n" + ex.Message + "\n\nLog: " + logPath, "ppInk", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
 
         private static string PrepareConfigFolder(string programFolder, string runningFolder)
         // returns CurrentFolder
