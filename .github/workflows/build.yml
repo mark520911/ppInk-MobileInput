@@ -120,3 +120,16 @@ jobs:
           echo "C# source files:"
           find src -name "*.cs" | sort
           echo "Total: $(find src -name '*.cs' | wc -l) files"
+
+      - name: Check for empty catch blocks (quality gate)
+        run: |
+          EMPTY_CATCHES=$(grep -rn 'catch\s*{' src/ --include="*.cs" | grep -v '// ' | wc -l)
+          echo "Empty catch blocks found: $EMPTY_CATCHES"
+          if [ "$EMPTY_CATCHES" -gt 0 ]; then
+            echo "::warning file=build::$EMPTY_CATCHES empty catch blocks detected - prefer Contains() or log exception"
+          fi
+
+      - name: Check for public single-letter or Form1 fields
+        run: |
+          BAD_NAMES=$(grep -rn 'public partial class Form1' src/ --include="*.cs" | grep -v "FormOptions\|FormDisplay\|FormCollection\|FormInput\|FormAbout\|FormButtonHitter\|FormQrDisplay\|ColorPickerDlg\|PenModifyDlg\|ArrowSelDlg" | wc -l)
+          if [ "$BAD_NAMES" -gt 0 ]; then echo "::error::Found Form1 class name"; exit 1; fi
