@@ -7,7 +7,7 @@ on:
 jobs:
   build-windows:
     name: Build ppInk (C#)
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v5
 
@@ -24,14 +24,16 @@ jobs:
       - name: Build Solution (x86 Release)
         shell: pwsh
         run: |
-          Write-Host "Building x86 Release..."
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:PostBuildEvent= /m /v:d
+          $sdkVer = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Sort-Object Name -Descending | Select-Object -First 1).Name
+          Write-Host "Detected Windows SDK version: $sdkVer"
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
 
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
-          Write-Host "Building x64 Release..."
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:PostBuildEvent= /m /v:d
+          $sdkVer = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Sort-Object Name -Descending | Select-Object -First 1).Name
+          Write-Host "Detected Windows SDK version: $sdkVer"
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
 
       - name: Upload Build Artifacts
         if: always()
