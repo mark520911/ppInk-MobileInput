@@ -39,14 +39,14 @@ class BleServer(private val deviceName: String) {
         }
 
         val server = bluetoothManager.openGattServer(context, object : BluetoothGattServerCallback() {
-            override fun onClientConnectionStateChange(clientId: Int, newState: Int) {
+            override fun onClientConnectionStateChange(device: BluetoothDevice, status: Int, newState: Int) {
                 when (newState) {
                     BluetoothProfile.STATE_CONNECTED -> {
-                        Log.d(TAG, "BLE client connected: $clientId")
+                        Log.d(TAG, "BLE client connected: ${device.address}")
                         onClientConnected()
                     }
                     BluetoothProfile.STATE_DISCONNECTED -> {
-                        Log.d(TAG, "BLE client disconnected: $clientId")
+                        Log.d(TAG, "BLE client disconnected: ${device.address}")
                         onClientDisconnected()
                     }
                 }
@@ -54,6 +54,7 @@ class BleServer(private val deviceName: String) {
 
             override fun onCharacteristicWriteRequest(
                 device: BluetoothDevice,
+                requestId: Int,
                 characteristic: BluetoothGattCharacteristic,
                 value: ByteArray,
                 offset: Int,
@@ -65,15 +66,16 @@ class BleServer(private val deviceName: String) {
                     onDataReceived(value)
                     // Send response
                     if (valueOffset == 0) {
-                        bleServer?.sendResponse(device, BluetoothGatt.GATT_SUCCESS, offset, value)
+                        bleServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value)
                     }
                 } else {
-                    bleServer?.sendResponse(device, BluetoothGatt.GATT_FAILURE, 0, null)
+                    bleServer?.sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE, 0, null)
                 }
             }
 
             override fun onCharacteristicReadRequest(
                 device: BluetoothDevice,
+                requestId: Int,
                 characteristic: BluetoothGattCharacteristic,
                 offset: Int
             ) {
@@ -84,19 +86,20 @@ class BleServer(private val deviceName: String) {
                     } else {
                         byteArrayOf()
                     }
-                    bleServer?.sendResponse(device, BluetoothGatt.GATT_SUCCESS, offset, responseValue)
+                    bleServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, responseValue)
                 }
             }
 
             override fun onDescriptorWriteRequest(
                 device: BluetoothDevice,
+                requestId: Int,
                 descriptor: BluetoothGattDescriptor,
                 value: ByteArray,
                 offset: Int,
                 valueOffset: Int,
                 properties: Int
             ) {
-                bleServer?.sendResponse(device, BluetoothGatt.GATT_SUCCESS, offset, value)
+                bleServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value)
             }
         })
 
