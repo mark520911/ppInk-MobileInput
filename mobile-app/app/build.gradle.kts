@@ -7,6 +7,20 @@ android {
     namespace = "com.ppink.mobile"
     compileSdk = 34
 
+    signingConfigs {
+        create("release") {
+            // Use environment variables for CI, or fall back to debug keystore
+            storeFile = if (System.getenv("KEYSTORE_PATH") != null) {
+                file(System.getenv("KEYSTORE_PATH"))
+            } else {
+                file(System.getProperty("user.home") + "/.android/debug.keystore")
+            }
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "android"
+            keyAlias = System.getenv("KEY_ALIAS") ?: "androiddebugkey"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: "android"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.ppink.mobile"
         minSdk = 21
@@ -18,6 +32,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
