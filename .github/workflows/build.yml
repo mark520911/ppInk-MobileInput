@@ -49,13 +49,32 @@ jobs:
           # App.config bindingRedirect codeBase href expects local.microsoft.ink.dll
           Copy-Item ppink\Microsoft.Ink.dll ppink\local.microsoft.ink.dll -Force
 
+      - name: Package x64 distribution
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/x64
+          Copy-Item ppink/ppInk.exe dist/x64/
+          Copy-Item ppink/*.dll dist/x64/
+          Copy-Item ppink/ppInk.exe.config dist/x64/
+          Compress-Archive -Path dist/x64/* -DestinationPath dist/ppInk-x64.zip -Force
+
+      - name: Package x86 distribution
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/x86
+          Copy-Item ppink/ppInk.x86.exe dist/x86/ppInk.exe
+          Copy-Item ppink/*.dll dist/x86/
+          Copy-Item ppink/ppInk.exe.config dist/x86/
+          Compress-Archive -Path dist/x86/* -DestinationPath dist/ppInk-x86.zip -Force
+
       - name: Upload Build Artifacts
         if: always()
         uses: actions/upload-artifact@v5
         with:
           name: ppInk-windows
           path: |
-            ppink/
+            dist/ppInk-x64.zip
+            dist/ppInk-x86.zip
 
   build-android:
     name: Build Android App
