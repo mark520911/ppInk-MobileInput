@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(git -C /opt/ppInk-master add -A)",
-      "Bash(git -C /opt/ppInk-master commit -m \"fix: MobileInputHandler thread-safe Lazy<T> singleton, setStrokeProperties contains-check\")"
-    ]
-  }
-}
