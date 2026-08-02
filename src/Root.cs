@@ -574,7 +574,7 @@ namespace gInk
                 try
                 {
                     MobileWSServer = new WebSocketServer(this);
-                    MobileInputHandler mobileHandler = new MobileInputHandler(this);
+                    MobileInputHandler.Instance.Initialize(this);
                     if (!MobileWSServer.Start(MobileInput_Url, MobileInput_Password))
                         Console.WriteLine("Mobile input WebSocket server failed to start");
                 }
@@ -623,14 +623,7 @@ namespace gInk
             }
             catch { }
 
-            MobileInputHandler.Instance = null;
-            // Only start WebSocket server for WiFi/USB modes
-            if (MobileInput_Url != "" && (MobileInput_ConnType == "WiFi" || MobileInput_ConnType == "USB"))
-            {
-                try
-                {
-                    MobileWSServer = new WebSocketServer(this);
-                    MobileInputHandler mobileHandler = new MobileInputHandler(this);
+            MobileInputHandler.Instance.Initialize(null); // detach root
                     if (!MobileWSServer.Start(MobileInput_Url, MobileInput_Password))
                         Console.WriteLine("Mobile input WebSocket server failed to start");
                 }

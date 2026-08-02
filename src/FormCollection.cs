@@ -1699,11 +1699,11 @@ namespace gInk
 
         private void setStrokeProperties(ref Stroke st, int FilledSelected)
         {
-            try { st.ExtendedProperties.Remove(Root.ISSTROKE_GUID); } catch { }
-            try { st.ExtendedProperties.Remove(Root.ISFILLEDCOLOR_GUID); } catch { }
-            try { st.ExtendedProperties.Remove(Root.ISFILLEDOUTSIDE_GUID); } catch { }
-            try { st.ExtendedProperties.Remove(Root.ISFILLEDWHITE_GUID); } catch { }
-            try { st.ExtendedProperties.Remove(Root.ISFILLEDBLACK_GUID); } catch { }
+            if (st.ExtendedProperties.Contains(Root.ISSTROKE_GUID)) st.ExtendedProperties.Remove(Root.ISSTROKE_GUID);
+            if (st.ExtendedProperties.Contains(Root.ISFILLEDCOLOR_GUID)) st.ExtendedProperties.Remove(Root.ISFILLEDCOLOR_GUID);
+            if (st.ExtendedProperties.Contains(Root.ISFILLEDOUTSIDE_GUID)) st.ExtendedProperties.Remove(Root.ISFILLEDOUTSIDE_GUID);
+            if (st.ExtendedProperties.Contains(Root.ISFILLEDWHITE_GUID)) st.ExtendedProperties.Remove(Root.ISFILLEDWHITE_GUID);
+            if (st.ExtendedProperties.Contains(Root.ISFILLEDBLACK_GUID)) st.ExtendedProperties.Remove(Root.ISFILLEDBLACK_GUID);
 
             if (FilledSelected != Filling.PenColorFilled && FilledSelected != Filling.Outside && st.DrawingAttributes.Width > 0)
                 st.ExtendedProperties.Add(Root.ISSTROKE_GUID, true);

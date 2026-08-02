@@ -11,7 +11,9 @@ namespace gInk
     /// </summary>
     public class MobileInputHandler
     {
-        public static MobileInputHandler Instance;
+        private static readonly Lazy<MobileInputHandler> _instance =
+            new Lazy<MobileInputHandler>(() => new MobileInputHandler());
+        public static MobileInputHandler Instance => _instance.Value;
         private Root Root;
 
         // --- SendInput (system-level cursor control) ---
@@ -36,7 +38,8 @@ namespace gInk
         [DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-        public MobileInputHandler(Root root) { Root = root; Instance = this; }
+        private MobileInputHandler() { }
+        public void Initialize(Root root) { Root = root; }
 
         public void ProcessFrame(MobileSession sess, byte[] frame)
         {
