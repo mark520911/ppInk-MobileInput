@@ -26,17 +26,17 @@ jobs:
 
       - name: Restore NuGet packages
         shell: cmd
-        run: nuget restore ppInk.sln
+        run: nuget restore src\ppInk.csproj -PackagesDirectory "src\packages"
 
       - name: Build Solution (x86 Release)
         shell: cmd
         run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="%WIN_SDK_VER%" /m /v:d
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="%WIN_SDK_VER%" /p:PostBuildEvent= /m /v:d
 
       - name: Build Solution (x64 Release)
         shell: cmd
         run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion="%WIN_SDK_VER%" /m /v:d
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion="%WIN_SDK_VER%" /p:PostBuildEvent= /m /v:d
 
       - name: Upload Build Artifacts
         if: always()
