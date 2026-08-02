@@ -9,21 +9,21 @@ jobs:
     name: Build ppInk (C#)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup .NET Framework
         run: |
           "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" -version
       - name: Restore NuGet packages
-        run: nuget restore src/ppInk.sln
+        run: nuget restore ppInk.sln
       - name: Build Solution (x86 Release - with NETFX BLE code)
         run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src/ppInk.sln /p:Configuration=Release /p:Platform=x86 /m /v:q
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x86 /m /v:q
       - name: Build Solution (x64 Release)
         run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src/ppInk.sln /p:Configuration=Release /p:Platform=x64 /m /v:q
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x64 /m /v:q
       - name: Upload Build Artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ppInk-windows
           path: src/ppInk/bin/x86/Release/
@@ -32,24 +32,31 @@ jobs:
     name: Build Android App
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-      - name: Make Gradle executable
-        run: chmod +x mobile-app/gradlew
+        with:
+          api-level: 34
+      - name: Create local.properties
+        run: echo "sdk.dir=${{ runner.android_sdk_root }}" > mobile-app/local.properties
+      - name: Download and setup Gradle
+        run: |
+          curl -sL https://services.gradle.org/distributions/gradle-8.7-all.zip -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          echo "/tmp/gradle-8.7/bin" >> $GITHUB_PATH
       - name: Build Android App
         run: |
           cd mobile-app
-          ./gradlew assembleRelease --no-daemon
+          gradle assembleRelease --no-daemon
         shell: bash
       - name: Upload APK
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ppInk-android
           path: mobile-app/app/build/outputs/apk/release/
@@ -59,7 +66,7 @@ jobs:
     name: Syntax Verification (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check XML validity
         run: |
           find . -name "*.xml" -path "*/res/*" -exec echo "OK: {}" \;
