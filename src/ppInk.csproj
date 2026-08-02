@@ -103,7 +103,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <!-- <Reference Include="Windows" /> -->
+    <Reference Include="Windows" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apng\APngImage.cs" />
