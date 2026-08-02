@@ -11,21 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 配置 Visual Studio 最新的 MSBuild 工具链
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
 
-      # 移除 -MSBuildVersion 17，让 nuget 自动感知系统 Visual Studio 环境
       - name: Restore NuGet packages
         run: nuget restore ppInk.sln
 
+      # 编译 x86 版本：传入 TargetPlatformVersion 以保障 WinRT API (BLE/Gatt) 的编译支持
       - name: Build Solution (x86 Release)
-        run: msbuild ppInk.sln /p:Configuration=Release /p:Platform="x86" /m /v:m
+        run: |
+          msbuild ppInk.sln /p:Configuration=Release /p:Platform="x86" /p:TargetPlatformVersion=10.0.19041.0 /m /v:m
 
+      # 编译 x64 版本
       - name: Build Solution (x64 Release)
-        run: msbuild ppInk.sln /p:Configuration=Release /p:Platform="x64" /m /v:m
+        run: |
+          msbuild ppInk.sln /p:Configuration=Release /p:Platform="x64" /p:TargetPlatformVersion=10.0.19041.0 /m /v:m
 
       - name: Upload Build Artifacts
         if: always()
@@ -53,7 +57,7 @@ jobs:
         with:
           api-level: 34
 
-      # 使用 GitHub 官方支持的 setup-gradle，自动接管 Gradle 环境和缓存
+      # 使用官方 setup-gradle 自动配置 Gradle 依赖与环境
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
@@ -62,13 +66,10 @@ jobs:
 
       - name: Accept Android SDK Licenses
         run: |
-          TARGET_SDK_DIR="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
-          SDKMANAGER="$TARGET_SDK_DIR/cmdline-tools/latest/bin/sdkmanager"
-          
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           if [ ! -f "$SDKMANAGER" ]; then
-            SDKMANAGER="$TARGET_SDK_DIR/tools/bin/sdkmanager"
+            SDKMANAGER="$ANDROID_HOME/tools/bin/sdkmanager"
           fi
-
           yes | $SDKMANAGER --licenses || true
           yes | $SDKMANAGER "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
 
@@ -76,11 +77,13 @@ jobs:
         shell: bash
         run: |
           cd mobile-app
-          if [ -f "./gradlew" ]; then
+          # 优先尝试使用系统的 gradle 编译，避免 gradlew 下载过程丢失可执行文件
+          if gradle assembleRelease --no-daemon --stacktrace; then
+            echo "System gradle build succeeded."
+          else
+            echo "Fallback to gradlew..."
             chmod +x gradlew
             ./gradlew assembleRelease --no-daemon --stacktrace
-          else
-            gradle assembleRelease --no-daemon --stacktrace
           fi
 
       - name: Upload APK
