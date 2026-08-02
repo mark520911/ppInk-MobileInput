@@ -39,7 +39,7 @@ class BleServer(private val deviceName: String) {
         }
 
         val server = bluetoothManager.openGattServer(context, object : BluetoothGattServerCallback() {
-            override fun onClientConnectionStateChange(device: BluetoothDevice, status: Int, newState: Int) {
+            override fun onConnectionStateChange(device: BluetoothDevice, status: Int, newState: Int) {
                 when (newState) {
                     BluetoothProfile.STATE_CONNECTED -> {
                         Log.d(TAG, "BLE client connected: ${device.address}")
@@ -56,33 +56,31 @@ class BleServer(private val deviceName: String) {
                 device: BluetoothDevice,
                 requestId: Int,
                 characteristic: BluetoothGattCharacteristic,
-                value: ByteArray,
+                preparedWrite: Boolean,
+                responseNeeded: Boolean,
                 offset: Int,
-                valueOffset: Int,
-                properties: Int
+                value: ByteArray
             ) {
                 if (characteristic.uuid == TX_CHAR_UUID) {
                     Log.d(TAG, "BLE write received: ${value.size} bytes")
                     onDataReceived(value)
                     // Send response
-                    if (valueOffset == 0) {
+                    if (responseNeeded) {
                         bleServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value)
                     }
-                } else {
-                    bleServer?.sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE, 0, null)
                 }
             }
 
             override fun onCharacteristicReadRequest(
                 device: BluetoothDevice,
                 requestId: Int,
-                characteristic: BluetoothGattCharacteristic,
-                offset: Int
+                offset: Int,
+                characteristic: BluetoothGattCharacteristic
             ) {
                 if (characteristic.uuid == RX_CHAR_UUID) {
-                    val value = characteristic.value
-                    val responseValue = if (offset <= value.size) {
-                        value.copyOfRange(offset, value.size)
+                    val charValue = characteristic.value
+                    val responseValue = if (offset <= charValue.size) {
+                        charValue.copyOfRange(offset, charValue.size)
                     } else {
                         byteArrayOf()
                     }
@@ -94,12 +92,14 @@ class BleServer(private val deviceName: String) {
                 device: BluetoothDevice,
                 requestId: Int,
                 descriptor: BluetoothGattDescriptor,
-                value: ByteArray,
+                preparedWrite: Boolean,
+                responseNeeded: Boolean,
                 offset: Int,
-                valueOffset: Int,
-                properties: Int
+                value: ByteArray
             ) {
-                bleServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value)
+                if (responseNeeded) {
+                    bleServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value)
+                }
             }
         })
 
@@ -134,7 +134,6 @@ class BleServer(private val deviceName: String) {
                 .build()
 
             val data = AdvertiseData.Builder()
-                .setDeviceName(deviceName)
                 .addServiceUuid(ParcelUuid(SERVICE_UUID))
                 .setIncludeDeviceName(true)
                 .build()
@@ -163,7 +162,9 @@ class BleServer(private val deviceName: String) {
             if (rxChar != null) {
                 rxChar.value = data
                 // Notify all connected devices
-                bleServer?.notifyCharacteristicChanged(rxChar, false, data)
+                bleServer?.connectedDevices?.forEach { device ->
+                    bleServer?.notifyCharacteristicChanged(device, rxChar, false)
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Notify failed: ${e.message}")

@@ -33,7 +33,7 @@ object FrameProtocol {
 
     /** Creates a mode switch frame */
     fun createModeSwitch(mode: Int): ByteArray {
-        return byteArrayOf(MSG_MODE_SWITCH, mode.toByte())
+        return byteArrayOf(MSG_MODE_SWITCH.toByte(), mode.toByte())
     }
 
     /** Parses an incoming frame from PC (stroke rendering data) */
