@@ -24,22 +24,14 @@ jobs:
       - name: Build Solution (x86 Release)
         shell: pwsh
         run: |
-          $sdkVer = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } | Sort-Object Name -Descending | Where-Object { Test-Path "C:\Program Files (x86)\Windows Kits\10\References\$($_.Name)" } | Select-Object -First 1
-          if ($sdkVer -eq $null) {
-            $sdkVer = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } | Sort-Object Name -Descending | Select-Object -First 1
-          }
-          Write-Host "Detected Windows SDK version: $($sdkVer.Name)"
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="$($sdkVer.Name)" /p:PostBuildEvent= /m /v:d
+          Write-Host "Building x86 Release..."
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:PostBuildEvent= /m /v:d
 
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
-          $sdkVer = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } | Sort-Object Name -Descending | Where-Object { Test-Path "C:\Program Files (x86)\Windows Kits\10\References\$($_.Name)" } | Select-Object -First 1
-          if ($sdkVer -eq $null) {
-            $sdkVer = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } | Sort-Object Name -Descending | Select-Object -First 1
-          }
-          Write-Host "Detected Windows SDK version: $($sdkVer.Name)"
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion="$($sdkVer.Name)" /p:PostBuildEvent= /m /v:d
+          Write-Host "Building x64 Release..."
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:PostBuildEvent= /m /v:d
 
       - name: Upload Build Artifacts
         if: always()
