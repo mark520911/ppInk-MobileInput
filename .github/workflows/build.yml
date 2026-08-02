@@ -53,18 +53,16 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path dist/x64
-          Copy-Item ppink/ppInk.exe dist/x64/
-          Copy-Item ppink/*.dll dist/x64/
-          Copy-Item ppink/ppInk.exe.config dist/x64/
+          Copy-Item ppink/* dist/x64/ -Recurse -Force
           Compress-Archive -Path dist/x64/* -DestinationPath dist/ppInk-x64.zip -Force
 
       - name: Package x86 distribution
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path dist/x86
-          Copy-Item ppink/ppInk.x86.exe dist/x86/ppInk.exe
-          Copy-Item ppink/*.dll dist/x86/
-          Copy-Item ppink/ppInk.exe.config dist/x86/
+          Copy-Item ppink/* dist/x86/ -Recurse -Force
+          # Replace with x86 exe
+          Copy-Item ppink/ppInk.x86.exe dist/x86/ppInk.exe -Force
           Compress-Archive -Path dist/x86/* -DestinationPath dist/ppInk-x86.zip -Force
 
       - name: Upload Build Artifacts
