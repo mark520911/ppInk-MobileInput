@@ -46,8 +46,7 @@ jobs:
         with:
           name: ppInk-windows
           path: |
-            src/ppInk/bin/x86/Release/
-            src/ppInk/bin/x64/Release/
+            ppink/
 
   build-android:
     name: Build Android App
