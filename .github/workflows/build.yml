@@ -9,69 +9,82 @@ jobs:
     name: Build ppInk (C#)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v5
-      - name: Setup .NET Framework
-        shell: cmd
-        run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" -version
+      - uses: actions/checkout@v4
+
+      # 使用官方 Setup 动作配置 MSBuild 和 NuGet 环境
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
       - name: Restore NuGet packages
-        shell: cmd
         run: nuget restore ppInk.sln
-      - name: Build Solution (x86 Release - with NETFX BLE code)
-        shell: cmd
-        run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x86 /m /v:d
+
+      - name: Build Solution (x86 Release)
+        run: msbuild ppInk.sln /p:Configuration=Release /p:Platform=x86 /m /v:m
+
       - name: Build Solution (x64 Release)
-        shell: cmd
-        run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x64 /m /v:d
+        run: msbuild ppInk.sln /p:Configuration=Release /p:Platform=x64 /m /v:m
+
       - name: Upload Build Artifacts
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: ppInk-windows
-          path: src/ppInk/bin/x86/Release/
+          # 同时收集 x86 与 x64 的编译输出
+          path: |
+            src/ppInk/bin/x86/Release/
+            src/ppInk/bin/x64/Release/
 
   build-android:
     name: Build Android App
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+
       - name: Setup JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           api-level: 34
+
       - name: Create local.properties
         run: echo "sdk.dir=${{ runner.android_sdk_root }}" > mobile-app/local.properties
+
       - name: Accept Android SDK Licenses
         run: |
-          export ANDROID_HOME=${{ runner.android_sdk_root }}
-          export ANDROID_SDK_ROOT=${{ runner.android_sdk_root }}
-          yes | sdkmanager --licenses
-          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-          mkdir -p "$ANDROID_HOME/licenses"
-          cp -r ~/.android/licenses/* "$ANDROID_HOME/licenses/" 2>/dev/null || true
-        env:
-          ANDROID_HOME: ${{ runner.android_sdk_root }}
-          ANDROID_SDK_ROOT: ${{ runner.android_sdk_root }}
+          SDKMANAGER="${{ runner.android_sdk_root }}/cmdline-tools/latest/bin/sdkmanager"
+          yes | $SDKMANAGER --licenses || true
+          yes | $SDKMANAGER "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
+          mkdir -p "${{ runner.android_sdk_root }}/licenses"
+          cp -r ~/.android/licenses/* "${{ runner.android_sdk_root }}/licenses/" 2>/dev/null || true
+
       - name: Download and setup Gradle
         run: |
           curl -sL https://services.gradle.org/distributions/gradle-8.7-all.zip -o /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /tmp
           echo "/tmp/gradle-8.7/bin" >> $GITHUB_PATH
+
       - name: Build Android App
+        shell: bash
         run: |
           cd mobile-app
-          gradle assembleRelease --no-daemon --stacktrace
-        shell: bash
+          if [ -f "./gradlew" ]; then
+            chmod +x gradlew
+            ./gradlew assembleRelease --no-daemon --stacktrace
+          else
+            gradle assembleRelease --no-daemon --stacktrace
+          fi
+
       - name: Upload APK
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: ppInk-android
           path: mobile-app/app/build/outputs/apk/release/
@@ -81,15 +94,18 @@ jobs:
     name: Syntax Verification (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+
       - name: Check XML validity
         run: |
           find . -name "*.xml" -path "*/res/*" -exec echo "OK: {}" \;
+
       - name: Check Kotlin files exist
         run: |
           echo "Kotlin source files:"
           find mobile-app -name "*.kt" | sort
           echo "Total: $(find mobile-app -name '*.kt' | wc -l) files"
+
       - name: Check C# files exist
         run: |
           echo "C# source files:"
