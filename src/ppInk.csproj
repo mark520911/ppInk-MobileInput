@@ -47,8 +47,11 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(IncludeWindowsSdk)' != 'false'">
     <ApplicationManifest>ppInk.exe.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IncludeWindowsSdk)' == 'false'">
+    <ApplicationManifest>gInk.exe.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
