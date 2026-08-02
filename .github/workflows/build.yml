@@ -31,36 +31,38 @@ jobs:
       - name: Build Solution (x86 Release)
         shell: pwsh
         run: |
-          # Detect installed Windows SDK version (prefer 10.0.22621.0 for .NET 4.8 compat)
-          $sdkPath = "C:\Program Files (x86)\Windows Kits\10\Include"
-          $sdkVer = "10.0.22621.0"
-          if (Test-Path $sdkPath) {
-            $versions = Get-ChildItem $sdkPath | Where-Object { $_.Name -match '^10\.0\.\d+' } | Sort-Object Name -Descending
-            if ($versions.Count -gt 0) {
-              $preferred = $versions | Where-Object { $_.Name -eq "10.0.22621.0" }
-              $sdkVer = if ($preferred) { "10.0.22621.0" } else { $versions[0].Name }
-            }
+          # Detect installed Windows SDK version with full reference assemblies
+          $sdkVer = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" |
+            Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } |
+            Sort-Object Name -Descending |
+            Where-Object { Test-Path "C:\Program Files (x86)\Windows Kits\10\References\$($_.Name)" } |
+            Select-Object -First 1
+          if ($sdkVer -eq $null) {
+            $sdkVer = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" |
+              Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } |
+              Sort-Object Name -Descending | Select-Object -First 1
           }
-          Write-Host "Using Windows SDK version: $sdkVer"
+          Write-Host "Detected Windows SDK version: $($sdkVer.Name)"
           Write-Host "Building x86 Release..."
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="$($sdkVer.Name)" /p:PostBuildEvent= /m /v:d
 
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
-          # Detect installed Windows SDK version (prefer 10.0.22621.0 for .NET 4.8 compat)
-          $sdkPath = "C:\Program Files (x86)\Windows Kits\10\Include"
-          $sdkVer = "10.0.22621.0"
-          if (Test-Path $sdkPath) {
-            $versions = Get-ChildItem $sdkPath | Where-Object { $_.Name -match '^10\.0\.\d+' } | Sort-Object Name -Descending
-            if ($versions.Count -gt 0) {
-              $preferred = $versions | Where-Object { $_.Name -eq "10.0.22621.0" }
-              $sdkVer = if ($preferred) { "10.0.22621.0" } else { $versions[0].Name }
-            }
+          # Detect installed Windows SDK version with full reference assemblies
+          $sdkVer = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" |
+            Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } |
+            Sort-Object Name -Descending |
+            Where-Object { Test-Path "C:\Program Files (x86)\Windows Kits\10\References\$($_.Name)" } |
+            Select-Object -First 1
+          if ($sdkVer -eq $null) {
+            $sdkVer = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" |
+              Where-Object { $_.Name -match '^\d+\.\d+\.\d+' } |
+              Sort-Object Name -Descending | Select-Object -First 1
           }
-          Write-Host "Using Windows SDK version: $sdkVer"
+          Write-Host "Detected Windows SDK version: $($sdkVer.Name)"
           Write-Host "Building x64 Release..."
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion="$($sdkVer.Name)" /p:PostBuildEvent= /m /v:d
 
       - name: Upload Build Artifacts
         if: always()
