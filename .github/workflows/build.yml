@@ -33,12 +33,21 @@ jobs:
         run: |
           Write-Host "Building x86 Release..."
           msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:PostBuildEvent= /p:IncludeWindowsSdk=false /m /v:d
+          # Backup x86 exe before x64 build overwrites it
+          Copy-Item ppink\ppInk.exe ppink\ppInk.x86.exe -Force
+          Copy-Item ppink\ppInk.pdb ppink\ppInk.x86.pdb -ErrorAction SilentlyContinue -Force
 
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
           Write-Host "Building x64 Release..."
           msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:PostBuildEvent= /p:IncludeWindowsSdk=false /m /v:d
+
+      - name: Fix runtime dependencies
+        shell: pwsh
+        run: |
+          # App.config bindingRedirect codeBase href expects local.microsoft.ink.dll
+          Copy-Item ppink\Microsoft.Ink.dll ppink\local.microsoft.ink.dll -Force
 
       - name: Upload Build Artifacts
         if: always()
