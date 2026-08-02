@@ -104,9 +104,9 @@ jobs:
               -alias androiddebugkey \
               -keyalg RSA -keysize 2048 -validity 10000 \
               -storepass android -keypass android \
-              -dname "CN=Android Debug,O=Android,C=US" | true
+              -dname "CN=Android Debug,O=Android,C=US"
           fi
-          gradle assembleRelease --no-daemon --stacktrace
+          ./gradlew assembleRelease --no-daemon --stacktrace
 
       - name: Upload APK
         if: always()
