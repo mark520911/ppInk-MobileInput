@@ -50,8 +50,12 @@ jobs:
         run: echo "sdk.dir=${{ runner.android_sdk_root }}" > mobile-app/local.properties
       - name: Accept Android SDK Licenses
         run: |
-          yes | ${{ env.ANDROID_SDK_ROOT }}/cmdline-tools/latest/bin/sdkmanager --licenses
-          yes | ${{ env.ANDROID_SDK_ROOT }}/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          export ANDROID_HOME=${{ runner.android_sdk_root }}
+          export ANDROID_SDK_ROOT=${{ runner.android_sdk_root }}
+          yes | sdkmanager --licenses
+          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          mkdir -p "$ANDROID_HOME/licenses"
+          cp -r ~/.android/licenses/* "$ANDROID_HOME/licenses/" 2>/dev/null || true
         env:
           ANDROID_HOME: ${{ runner.android_sdk_root }}
           ANDROID_SDK_ROOT: ${{ runner.android_sdk_root }}
