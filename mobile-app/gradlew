@@ -1,0 +1,11 @@
+#!/bin/bash
+# Minimal gradlew - download gradle if not cached
+export GRADLE_VERSION=8.7
+export GRADLE_HOME="$HOME/.gradle/wrapper/dists"
+export GRADLE_DIST="$GRADLE_HOME/gradle-$GRADLE_VERSION-all"
+if [ ! -d "$GRADLE_DIST" ]; then
+  mkdir -p "$GRADLE_HOME"
+  curl -sL "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-all.zip" -o /tmp/gradle.zip
+  unzip -q /tmp/gradle.zip -d "$GRADLE_HOME"
+fi
+exec "$GRADLE_DIST/bin/gradle" "$@"

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{82AD51F9-56A9-4698-A993-CC9E62F56812}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>gInk</RootNamespace>
+    <AssemblyName>ppInk</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\ppink\</OutputPath>
+    <BaseIntermediateOutputPath>..\build\obj\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\ppink\</OutputPath>
+    <BaseIntermediateOutputPath>..\build\obj\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>NETFX</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon_red.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>ppInk.exe.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\ppink\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\ppink\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>NETFX</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Cyotek.Windows.Forms.ColorPicker, Version=1.0.0.0, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ppInk\Cyotek.Windows.Forms.ColorPicker.dll</HintPath>
+    </Reference>
+    <Reference Include="GameOverlay, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GameOverlay.Net.4.3.1\lib\net45\GameOverlay.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Ink, Version=6.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ppInk\Microsoft.Ink.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct2D1.4.2.0\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.WindowsRuntime" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="Windows" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Apng\APngImage.cs" />
+    <Compile Include="Apng\Chunks\Chunk.cs" />
+    <Compile Include="Apng\Chunks\CodedChunks.cs" />
+    <Compile Include="Apng\StreamExtensions.cs" />
+    <Compile Include="Apng\Helper.cs" />
+    <Compile Include="Apng\Frame.cs" />
+    <Compile Include="BuildTimestamp.cs" />
+    <Compile Include="CallForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CallForm.Designer.cs">
+      <DependentUpon>CallForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APIRest.cs" />
+    <Compile Include="WebSocketServer.cs" />
+    <Compile Include="MobileInputHandler.cs" />
+    <Compile Include="BluetoothLEServer.cs" />
+    <Compile Include="QRCodeHelper.cs" />
+    <Compile Include="FormQrDisplay.cs" />
+    <Compile Include="FormQrDisplay.Designer.cs" />
+    <Compile Include="ArrowSelDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ArrowSelDlg.Designer.cs">
+      <DependentUpon>ArrowSelDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TinyJson.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="zoomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="zoomForm.Designer.cs">
+      <DependentUpon>zoomForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageLister.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageLister.Designer.cs">
+      <DependentUpon>ImageLister.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PenModifyDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PenModifyDlg.Designer.cs">
+      <DependentUpon>PenModifyDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInput.Designer.cs">
+      <DependentUpon>FormInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormButtonHitter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormButtonHitter.Designer.cs">
+      <DependentUpon>FormButtonHitter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDisplay.Designer.cs">
+      <DependentUpon>FormDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCollection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCollection.Designer.cs">
+      <DependentUpon>FormCollection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormOptions.Designer.cs">
+      <DependentUpon>FormOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Hotkey.cs" />
+    <Compile Include="HotkeyInputBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HotkeyInputBox.Designer.cs">
+      <DependentUpon>HotkeyInputBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Local.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Root.cs" />
+    <EmbeddedResource Include="ArrowSelDlg.resx">
+      <DependentUpon>ArrowSelDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CallForm.resx">
+      <DependentUpon>CallForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="zoomForm.resx">
+      <DependentUpon>zoomForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImageLister.resx">
+      <DependentUpon>ImageLister.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PenModifyDlg.resx">
+      <DependentUpon>PenModifyDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormInput.resx">
+      <DependentUpon>FormInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormButtonHitter.resx">
+      <DependentUpon>FormButtonHitter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDisplay.resx">
+      <DependentUpon>FormDisplay.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCollection.resx">
+      <DependentUpon>FormCollection.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormOptions.resx">
+      <DependentUpon>FormOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HotkeyInputBox.resx">
+      <DependentUpon>HotkeyInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Root.resx">
+      <DependentUpon>Root.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="defaults.ini" />
+    <None Include="gInk.exe.manifest" />
+    <None Include="packages.config" />
+    <None Include="pensdef.ini" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="garbage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="eraser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="eraseract.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="eraserinact.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cursorblue.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cursorred.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cursoryellow.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cursorgreen.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="highlighter1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pencil1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="highlighter_act.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pencil_act.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="buttonback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\changelog.txt" />
+    <Content Include="..\ppInk\lang\fr.txt" />
+    <Content Include="..\ppInk\lang\en-us.txt" />
+    <Content Include="..\ppInk\config.ini" />
+    <Content Include="..\ppInk\hotkeys.ini" />
+    <Content Include="..\ppInk\pens.ini" />
+    <Content Include="..\readme.md" />
+    <None Include="unpinned.png" />
+    <None Include="ZoomWin_act.png" />
+    <None Include="Zoom_act.png" />
+    <None Include="Zoom.png" />
+    <None Include="unknown.png" />
+    <None Include="VidDead.png" />
+    <None Include="VidUnk.png" />
+    <None Include="VidStop.png" />
+    <None Include="VidRecord.png" />
+    <None Include="VidPause.png" />
+    <None Include="VidBroadcast.png" />
+    <None Include="eyedropper.png" />
+    <None Include="DblHeadArrowVert.png" />
+    <None Include="cellbackground.png" />
+    <None Include="blackboard.png" />
+    <None Include="eraser.ico" />
+    <None Include="clipart.png" />
+    <None Include="clipart_act.png" />
+    <None Include="dockbackV.png" />
+    <None Include="dockV.png" />
+    <None Include="fadingTag.png" />
+    <None Include="DashStyleDash.png" />
+    <None Include="DashStyleDashDot.png" />
+    <None Include="DashStyleDashDotDot.png" />
+    <None Include="DashStyleDot.png" />
+    <None Include="DashStylePressure.png" />
+    <None Include="DashStyleSolid.png" />
+    <None Include="DashStyleStroke.png" />
+    <None Include="DashDotDotLSTag.png" />
+    <None Include="DashDotLSTag.png" />
+    <None Include="DotLSTag.png" />
+    <None Include="DashLSTag.png" />
+    <None Include="lasso_act.png" />
+    <None Include="lasso.png" />
+    <None Include="cursorHSI.png" />
+    <None Include="cursortarget.ico" />
+    <None Include="ArrowHeads\Arw_Circle1.png" />
+    <None Include="flashLight.png" />
+    <None Include="ArrowHeads\Arw_Arrow1.png" />
+    <None Include="ArrowHeads\Arw_Arrow2.png" />
+    <None Include="ArrowHeads\Arw_Arrow3.png" />
+    <None Include="ArrowHeads\Arw_None.png" />
+    <None Include="ArrowHeads\Arw_Tail1.png" />
+    <None Include="ArrowHeads\!Arw_Diamond1.png" />
+    <None Include="ArrowHeads\!Arw_Square1.png" />
+    <None Include="FloatingCall.png" />
+    <None Include="ExtraPens.png" />
+    <None Include="ExtraPens1.png" />
+    <Content Include="Magnetic.png" />
+    <Content Include="Magnetic_act.png" />
+    <None Include="pan1_act.png" />
+    <None Include="Resources\pen_bg.png" />
+    <None Include="Resources\pen_col.png" />
+    <None Include="Resources\penS_bg.png" />
+    <None Include="Resources\penS_col.png" />
+    <None Include="Resources\Lpen_bg.png" />
+    <None Include="Resources\Lpen_col.png" />
+    <None Include="Resources\LpenS_bg.png" />
+    <None Include="Resources\LpenS_col.png" />
+    <None Include="pan_copy.png" />
+    <None Include="Open.png" />
+    <None Include="save.png" />
+    <None Include="toolbar2Down.png" />
+    <None Include="toolbar2Left.png" />
+    <None Include="toolbar2Right.png" />
+    <None Include="toolbar2Up.png" />
+    <None Include="pinned.png" />
+    <None Include="picker.png" />
+    <None Include="SolidLSTag.png" />
+    <None Include="StrokeLSTag.png" />
+    <None Include="rotate_act.png" />
+    <None Include="scale_act.png" />
+    <Compile Include="ToDoList.cs" />
+    <None Include="scale.png" />
+    <None Include="PRpen_bg.png" />
+    <None Include="PRpenS_bg.png" />
+    <None Include="PRpenS_col.png" />
+    <None Include="PRpen_col.png" />
+    <None Include="Resources\PRpen_bg.png" />
+    <None Include="Resources\PRpen_col.png" />
+    <None Include="Resources\PRpenS_bg.png" />
+    <None Include="Resources\PRpenS_col.png" />
+    <None Include="PageNext.png" />
+    <None Include="PagePrev.png" />
+    <Content Include="tool_edit.png" />
+    <Content Include="tool_edit_act.png" />
+    <Content Include="tool_enAr.png" />
+    <Content Include="tool_enAr_act.png" />
+    <None Include="tool_hand_filledB.png" />
+    <None Include="tool_hand_filledC.png" />
+    <None Include="tool_hand_filledW.png" />
+    <None Include="tool_hand_out.png" />
+    <Content Include="tool_line_act.png" />
+    <None Include="tool_mlines.png" />
+    <None Include="tool_mlines_filledB.png" />
+    <None Include="tool_mlines_filledC.png" />
+    <None Include="tool_mlines_filledW.png" />
+    <None Include="tool_mlines_out.png" />
+    <Content Include="tool_numb.png" />
+    <Content Include="tool_numb_act.png" />
+    <Content Include="tool_numb_fillB.png" />
+    <Content Include="tool_numb_fillC.png" />
+    <Content Include="tool_numb_fillW.png" />
+    <Content Include="tool_oval_act.png" />
+    <Content Include="tool_oval_filledB.png" />
+    <Content Include="tool_oval_filledC.png" />
+    <Content Include="tool_oval_filledW.png" />
+    <None Include="tool_oval_out.png" />
+    <None Include="tool_picker.png" />
+    <Content Include="tool_rect_act.png" />
+    <Content Include="tool_rect_filledB.png" />
+    <Content Include="tool_rect_filledC.png" />
+    <Content Include="tool_rect_filledW.png" />
+    <None Include="tool_rect_out.png" />
+    <Content Include="tool_StAr.png" />
+    <Content Include="tool_StAr_act.png" />
+    <Content Include="tool_txtL.png" />
+    <Content Include="tool_txtL_act.png" />
+    <Content Include="tool_txtR.png" />
+    <Content Include="tool_txtR_act.png" />
+    <None Include="paneloption.png" />
+    <None Include="visible_not.png" />
+    <None Include="visible.png" />
+    <None Include="pan_act.png" />
+    <None Include="pan.png" />
+    <None Include="null.png" />
+    <None Include="penwidthpanel.png" />
+    <None Include="penwidth.png" />
+    <None Include="pointer_act.png" />
+    <None Include="pointer.png" />
+    <None Include="snap.png" />
+    <None Include="dock.png" />
+    <None Include="dockback.png" />
+    <None Include="cursorsnap.ico" />
+    <None Include="i18n.png" />
+    <Content Include="draw.png" />
+    <Content Include="draw1.png" />
+    <None Include="tool_hand.png" />
+    <None Include="tool_line.png" />
+    <None Include="tool_rect.png" />
+    <None Include="tool_oval.png" />
+    <Content Include="icon_red.ico" />
+    <None Include="icon_white.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>echo namespace gInk { public static class Build { public static string Timestamp = "%25DATE%25 %25TIME%25".Substring(0,16);}} &gt; "$(ProjectDir)\BuildTimestamp.cs"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>call "$(ProjectDir)buildSimplifiedVersion.bat" "$(SolutionDir)" "$(MSBuildBinPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.ppink.mobile.DrawingView
+        android:id="@+id/drawingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnScanQr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_camera"
+        android:contentDescription="Scan QR Code" />
+
+    <LinearLayout
+        android:id="@+id/bleControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:orientation="horizontal"
+        android:background="#66000000"
+        android:padding="8dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btnStartBle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start BLE" />
+
+        <Button
+            android:id="@+id/btnStopBle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop BLE" />
+
+    </LinearLayout>
+
+</FrameLayout>
