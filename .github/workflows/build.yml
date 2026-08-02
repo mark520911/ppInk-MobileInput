@@ -55,7 +55,6 @@ jobs:
           name: ppInk-windows
           path: |
             dist/ppInk-x64.zip
-            dist/ppInk-x86.zip
 
   build-android:
     name: Build Android App
