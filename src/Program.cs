@@ -40,33 +40,31 @@ namespace gInk
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-                [STAThread]
-        static void Main(string[] args)
-        {
-            try
+        [STAThread]
+		static void Main(string [] args)
+		{
+            // force loading of local DLL 
+            Console.WriteLine("version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + " built on " + Build.Timestamp);
+            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");  // This ensure proper String processing whatever Operating Language
+            AppDomain customDomain = AppDomain.CreateDomain("IsolatedDomain", null, new AppDomainSetup
             {
-                // force loading of local DLL
-                Console.WriteLine("version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + " built on " + Build.Timestamp);
-                Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");  // This ensure proper String processing whatever Operating Language
-                AppDomain customDomain = AppDomain.CreateDomain("IsolatedDomain", null, new AppDomainSetup
+                ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
+                PrivateBinPath = AppDomain.CurrentDomain.BaseDirectory,
+                DisallowBindingRedirects = true,
+                DisallowCodeDownload = true,
+                DisallowPublisherPolicy = true
+            });
+            customDomain.AssemblyResolve += (sender, _args) =>
+            {
+                Console.WriteLine("!!!!!!!"+_args.Name);
+                if (_args.Name.StartsWith("Microsoft.Ink,"))
                 {
-                    ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
-                    PrivateBinPath = AppDomain.CurrentDomain.BaseDirectory,
-                    DisallowBindingRedirects = true,
-                    DisallowCodeDownload = true,
-                    DisallowPublisherPolicy = true
-                });
-                customDomain.AssemblyResolve += (sender, _args) =>
-                {
-                    Console.WriteLine("!!!!!!!"+_args.Name);
-                    if (_args.Name.StartsWith("Microsoft.Ink,"))
-                    {
-                        string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "microsoft.ink.dll");
-                        Console.WriteLine("try to force local loading of microsoft.ink");
-                        return Assembly.LoadFrom(localPath);
-                    }
-                    return null;
-                };
+                    string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "microsoft.ink.dll");
+                    Console.WriteLine("try to force local loading of microsoft.ink");
+                    return Assembly.LoadFrom(localPath);
+                }
+                return null;
+            };
             // Charge et ex�cute votre code dans le domaine personnalis�
             string pth = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "microsoft.ink.dll");
             Console.WriteLine(pth);
@@ -130,18 +128,14 @@ namespace gInk
             frm = new CallForm(new Root());
             //frm.Root = new Root();
             frm.Root.callForm = frm;
-            // Always show the floating CallForm when starting
+            // Always show CallForm on startup
             frm.Show();
             // if not applied after shown there seems to be issues with the dimensions
             frm.Top = frm.Root.FormTop;
             frm.Left = frm.Root.FormLeft;
-            frm.Width = Math.Max(frm.Root.FormWidth, 96);
-            frm.Height = Math.Max(frm.Root.FormWidth, 96);
-            frm.Opacity = Math.Max(0.7, Math.Abs(frm.Root.FormOpacity) / 100.0); // at least 70% visible
-            // Diagnostic: show a message box so user knows program started
-            MessageBox.Show("ppInk started. Click OK then look for the floating button."
-                + "\nFile: " + Path.GetFileName(frm.Root.callForm.ToString()),
-                "ppInk", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            frm.Width = frm.Root.FormWidth;
+            frm.Height = frm.Root.FormWidth;
+            frm.Opacity = frm.Root.FormOpacity / 100.0;
             if (Environment.CommandLine.IndexOf("--StartInking", StringComparison.OrdinalIgnoreCase) >= 0 )
                 PostMessage((IntPtr)HWND_BROADCAST, StartInkingMsg, (IntPtr)null, (IntPtr)null); // to Myself
             foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
@@ -156,14 +150,7 @@ namespace gInk
 
             Application.Run();
             FreeConsole();
-        }
-        catch (Exception ex)
-        {
-            string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ppInk.log");
-            try { File.AppendAllText(logPath, "FATAL: " + ex + Environment.NewLine); } catch { }
-            MessageBox.Show("Startup error:\n" + ex.Message + "\n\nLog: " + logPath, "ppInk", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
+		}
 
         private static string PrepareConfigFolder(string programFolder, string runningFolder)
         // returns CurrentFolder
@@ -322,10 +309,6 @@ namespace gInk
                 {
                     Application.Exit();
                 }
-            }
-            else
-            {
-                Application.Exit();
             }
             return rst;
 		}
