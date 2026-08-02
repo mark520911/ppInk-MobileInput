@@ -107,7 +107,7 @@ jobs:
               -storepass android -keypass android \
               -dname "CN=Android Debug,O=Android,C=US"
           fi
-          ./gradlew assembleRelease --no-daemon --stacktrace
+          gradle assembleRelease --no-daemon --stacktrace
 
       - name: Upload APK
         if: always()
