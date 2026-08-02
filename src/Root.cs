@@ -385,7 +385,7 @@ namespace gInk
         public string SnapshotFileTemplate = "$YYYY$-$MM$-$DD$ $H$-$M$-$S$.png";
         public bool SnapIgnoreBackgroundStroke = true; // for the moment not customizable by user
 
-        public int FormTop = 100, FormLeft = 100, FormWidth = 48, FormOpacity = -50; // negative opacity means that the window is not displayed
+        public int FormTop = 100, FormLeft = 100, FormWidth = 48, FormOpacity = 50; // negative opacity means that the window is not displayed
         public CallForm callForm = null;
         public bool OpenIntoSnapMode = false;
 
