@@ -98,6 +98,7 @@ class WebSocketClient(
         if (!s.startsWith("http://") && !s.startsWith("https://"))
             s = "ws://$s"
         s = s.replace("ws://", "http://").replace("wss://", "https://")
+        @Suppress("DEPRECATION")
         return HttpUrl.parse(s) ?: throw IllegalArgumentException("Invalid URL: $s")
     }
 }
