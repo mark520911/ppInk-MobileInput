@@ -17,18 +17,15 @@ jobs:
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
 
-      # 显式 Restore 确保 WinRT 依赖包（如 Microsoft.Windows.SDK.Contracts）下载完整
+      # 移除 -MSBuildVersion 17，让 nuget 自动感知系统 Visual Studio 环境
       - name: Restore NuGet packages
-        run: nuget restore ppInk.sln -MSBuildVersion 17
+        run: nuget restore ppInk.sln
 
-      # 优先尝试同时生成，指定 TargetFramework/TargetPlatformVersion
       - name: Build Solution (x86 Release)
-        run: |
-          msbuild ppInk.sln /p:Configuration=Release /p:Platform="x86" /m /v:m
+        run: msbuild ppInk.sln /p:Configuration=Release /p:Platform="x86" /m /v:m
 
       - name: Build Solution (x64 Release)
-        run: |
-          msbuild ppInk.sln /p:Configuration=Release /p:Platform="x64" /m /v:m
+        run: msbuild ppInk.sln /p:Configuration=Release /p:Platform="x64" /m /v:m
 
       - name: Upload Build Artifacts
         if: always()
@@ -56,13 +53,15 @@ jobs:
         with:
           api-level: 34
 
+      # 使用 GitHub 官方支持的 setup-gradle，自动接管 Gradle 环境和缓存
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Create local.properties
-        run: |
-          echo "sdk.dir=$ANDROID_HOME" > mobile-app/local.properties
+        run: echo "sdk.dir=$ANDROID_HOME" > mobile-app/local.properties
 
       - name: Accept Android SDK Licenses
         run: |
-          # 动态获取 ANDROID_HOME，防止变量为空落在根路径
           TARGET_SDK_DIR="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
           SDKMANAGER="$TARGET_SDK_DIR/cmdline-tools/latest/bin/sdkmanager"
           
@@ -72,9 +71,6 @@ jobs:
 
           yes | $SDKMANAGER --licenses || true
           yes | $SDKMANAGER "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
-          
-          mkdir -p "$TARGET_SDK_DIR/licenses"
-          cp -r ~/.android/licenses/* "$TARGET_SDK_DIR/licenses/" 2>/dev/null || true
 
       - name: Build Android App
         shell: bash
