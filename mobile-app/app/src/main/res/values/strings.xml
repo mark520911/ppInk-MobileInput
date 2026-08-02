@@ -7,6 +7,8 @@
     <string name="status_disconnected">Disconnected</string>
     <string name="status_connecting">Connecting...</string>
     <string name="status_connected">Connected</string>
+    <string name="hint_not_connected">Tap the camera button (top right) to scan the QR code displayed on your PC.</string>
+    <string name="hint_scanning">Scanning QR code...</string>
     <string name="mode_drawing">Drawing</string>
     <string name="mode_cursor">Cursor</string>
     <string name="toast_connected">Connected to ppInk</string>

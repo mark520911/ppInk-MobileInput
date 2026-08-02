@@ -65,8 +65,10 @@ class MainActivity : AppCompatActivity() {
         drawingView = findViewById(R.id.drawingView)
         bleControls = findViewById(R.id.bleControls)
         val btnScanQr = findViewById<View>(R.id.btnScanQr)
+        val hintText = findViewById<View>(R.id.hintText)
 
         btnScanQr.setOnClickListener {
+            hintText.visibility = View.GONE
             openQrScanner()
         }
 
@@ -77,11 +79,13 @@ class MainActivity : AppCompatActivity() {
         connectionManager = ConnectionManager(
             onConnected = {
                 runOnUiThread {
+                    hintText.visibility = View.GONE
                     Toast.makeText(this, "Connected to ppInk", Toast.LENGTH_SHORT).show()
                 }
             },
             onDisconnected = {
                 runOnUiThread {
+                    hintText.visibility = View.VISIBLE
                     Toast.makeText(this, "Disconnected from ppInk", Toast.LENGTH_SHORT).show()
                 }
             },
