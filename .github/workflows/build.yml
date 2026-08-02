@@ -11,6 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Write build timestamp
+        shell: pwsh
+        run: |
+          $ts = (Get-Date -Format 'dd/MM/yyyy HH:mm:ss')
+          Write-Host "Build timestamp: $ts"
+          "namespace gInk { public static class Build { public static string Timestamp = `"$ts`".Substring(0,16);}}" | Out-File -Encoding UTF8 src/BuildTimestamp.cs
+
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
@@ -25,13 +32,22 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "Building x86 Release..."
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:PostBuildEvent= /m /v:d
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:PostBuildEvent= /p:IncludeWindowsSdk=false /m /v:d
+          # Backup x86 exe before x64 build overwrites it
+          Copy-Item ppink\ppInk.exe ppink\ppInk.x86.exe -Force
+          Copy-Item ppink\ppInk.pdb ppink\ppInk.x86.pdb -ErrorAction SilentlyContinue -Force
 
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
           Write-Host "Building x64 Release..."
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:PostBuildEvent= /m /v:d
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:PostBuildEvent= /p:IncludeWindowsSdk=false /m /v:d
+
+      - name: Fix runtime dependencies
+        shell: pwsh
+        run: |
+          # App.config bindingRedirect codeBase href expects local.microsoft.ink.dll
+          Copy-Item ppink\Microsoft.Ink.dll ppink\local.microsoft.ink.dll -Force
 
       - name: Upload Build Artifacts
         if: always()
@@ -39,8 +55,7 @@ jobs:
         with:
           name: ppInk-windows
           path: |
-            src/ppInk/bin/x86/Release/
-            src/ppInk/bin/x64/Release/
+            ppink/
 
   build-android:
     name: Build Android App
@@ -82,6 +97,16 @@ jobs:
         shell: bash
         run: |
           cd mobile-app
+          # Ensure debug keystore exists for signing
+          mkdir -p ~/.android
+          if [ ! -f ~/.android/debug.keystore ]; then
+            keytool -genkey -v \
+              -keystore ~/.android/debug.keystore \
+              -alias androiddebugkey \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass android -keypass android \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
           gradle assembleRelease --no-daemon --stacktrace
 
       - name: Upload APK
@@ -113,3 +138,16 @@ jobs:
           echo "C# source files:"
           find src -name "*.cs" | sort
           echo "Total: $(find src -name '*.cs' | wc -l) files"
+
+      - name: Check for empty catch blocks (quality gate)
+        run: |
+          EMPTY_CATCHES=$(grep -rn 'catch\s*{' src/ --include="*.cs" | grep -v '// ' | wc -l)
+          echo "Empty catch blocks found: $EMPTY_CATCHES"
+          if [ "$EMPTY_CATCHES" -gt 0 ]; then
+            echo "::warning file=build::$EMPTY_CATCHES empty catch blocks detected - prefer Contains() or log exception"
+          fi
+
+      - name: Check for public single-letter or Form1 fields
+        run: |
+          BAD_NAMES=$(grep -rn 'public partial class Form1' src/ --include="*.cs" | grep -v "FormOptions\|FormDisplay\|FormCollection\|FormInput\|FormAbout\|FormButtonHitter\|FormQrDisplay\|ColorPickerDlg\|PenModifyDlg\|ArrowSelDlg" | wc -l)
+          if [ "$BAD_NAMES" -gt 0 ]; then echo "::error::Found Form1 class name"; exit 1; fi

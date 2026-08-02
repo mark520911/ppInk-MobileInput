@@ -31,6 +31,8 @@ namespace gInk
             try
             {
                 password = pwd;
+                if (!string.IsNullOrEmpty(pwd))
+                    Console.WriteLine("[WebSocketServer] WARNING: password is exposed in URL query string. Use a trusted network or change to first-frame auth.");
                 listener = new HttpListener();
                 listener.Prefixes.Clear();
                 listener.Prefixes.Add(url);

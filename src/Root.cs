@@ -574,7 +574,7 @@ namespace gInk
                 try
                 {
                     MobileWSServer = new WebSocketServer(this);
-                    MobileInputHandler mobileHandler = new MobileInputHandler(this);
+                    MobileInputHandler.Instance.Initialize(this);
                     if (!MobileWSServer.Start(MobileInput_Url, MobileInput_Password))
                         Console.WriteLine("Mobile input WebSocket server failed to start");
                 }
@@ -615,6 +615,8 @@ namespace gInk
 			Application.AddMessageFilter(mf);
         }
 
+
+
         public void RestartMobileServer()
         {
             try
@@ -623,14 +625,13 @@ namespace gInk
             }
             catch { }
 
-            MobileInputHandler.Instance = null;
-            // Only start WebSocket server for WiFi/USB modes
+            MobileInputHandler.Instance.Initialize(null);
             if (MobileInput_Url != "" && (MobileInput_ConnType == "WiFi" || MobileInput_ConnType == "USB"))
             {
                 try
                 {
                     MobileWSServer = new WebSocketServer(this);
-                    MobileInputHandler mobileHandler = new MobileInputHandler(this);
+                    MobileInputHandler.Instance.Initialize(this);
                     if (!MobileWSServer.Start(MobileInput_Url, MobileInput_Password))
                         Console.WriteLine("Mobile input WebSocket server failed to start");
                 }
@@ -644,7 +645,6 @@ namespace gInk
                 MobileWSServer = null;
             }
 
-            // Restart BLE server if Bluetooth mode
             try { MobileBLEServer?.Stop(); } catch { }
             MobileBLEServer = null;
             if (MobileInput_ConnType == "Bluetooth")
@@ -770,7 +770,7 @@ namespace gInk
                 var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
                 foreach (var ip in host.AddressList)
                 {
-                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !ip.IsLoopback)
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !System.Net.IPAddress.IsLoopback(ip))
                         return ip.ToString();
                 }
             }

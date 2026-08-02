@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace gInk
 {
-    public partial class Form1 : Form
+    public partial class ColorPickerDlg : Form
     {
         public Form1()
         {

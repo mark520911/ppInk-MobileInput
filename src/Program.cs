@@ -310,6 +310,10 @@ namespace gInk
                     Application.Exit();
                 }
             }
+            else
+            {
+                Application.Exit();
+            }
             return rst;
 		}
 

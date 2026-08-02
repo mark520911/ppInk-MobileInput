@@ -49,7 +49,7 @@ namespace gInk
                 txParams.CharacteristicProperties =
                     GattCharacteristicProperties.WriteWithoutResponse;
                 txParams.CharacteristicUuid = TX_CHAR_UUID;
-                txParams.WriteProtectionLevel = GattSecurityLevel.Plain;
+                txParams.WriteProtectionLevel = GattSecurityLevel.Encrypted;
 
                 var txResult = serviceProvider.AddCharacteristic(txParams);
                 if (txResult.Characteristic != null)
@@ -68,8 +68,8 @@ namespace gInk
                 rxParams.CharacteristicProperties =
                     GattCharacteristicProperties.Notify | GattCharacteristicProperties.Read;
                 rxParams.CharacteristicUuid = RX_CHAR_UUID;
-                rxParams.ReadProtectionLevel = GattSecurityLevel.Plain;
-                rxParams.WriteProtectionLevel = GattSecurityLevel.Plain;
+                rxParams.ReadProtectionLevel = GattSecurityLevel.Encrypted;
+                rxParams.WriteProtectionLevel = GattSecurityLevel.Encrypted;
                 rxParams.ExtendedProperties = true;
 
                 var rxResult = serviceProvider.AddCharacteristic(rxParams);
