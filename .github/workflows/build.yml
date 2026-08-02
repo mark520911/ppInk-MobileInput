@@ -11,28 +11,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 使用官方 Setup 动作配置 MSBuild 和 NuGet 环境
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
 
+      # 显式 Restore 确保 WinRT 依赖包（如 Microsoft.Windows.SDK.Contracts）下载完整
       - name: Restore NuGet packages
-        run: nuget restore ppInk.sln
+        run: nuget restore ppInk.sln -MSBuildVersion 17
 
+      # 优先尝试同时生成，指定 TargetFramework/TargetPlatformVersion
       - name: Build Solution (x86 Release)
-        run: msbuild ppInk.sln /p:Configuration=Release /p:Platform=x86 /m /v:m
+        run: |
+          msbuild ppInk.sln /p:Configuration=Release /p:Platform="x86" /m /v:m
 
       - name: Build Solution (x64 Release)
-        run: msbuild ppInk.sln /p:Configuration=Release /p:Platform=x64 /m /v:m
+        run: |
+          msbuild ppInk.sln /p:Configuration=Release /p:Platform="x64" /m /v:m
 
       - name: Upload Build Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ppInk-windows
-          # 同时收集 x86 与 x64 的编译输出
           path: |
             src/ppInk/bin/x86/Release/
             src/ppInk/bin/x64/Release/
@@ -55,21 +57,24 @@ jobs:
           api-level: 34
 
       - name: Create local.properties
-        run: echo "sdk.dir=${{ runner.android_sdk_root }}" > mobile-app/local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > mobile-app/local.properties
 
       - name: Accept Android SDK Licenses
         run: |
-          SDKMANAGER="${{ runner.android_sdk_root }}/cmdline-tools/latest/bin/sdkmanager"
+          # 动态获取 ANDROID_HOME，防止变量为空落在根路径
+          TARGET_SDK_DIR="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDKMANAGER="$TARGET_SDK_DIR/cmdline-tools/latest/bin/sdkmanager"
+          
+          if [ ! -f "$SDKMANAGER" ]; then
+            SDKMANAGER="$TARGET_SDK_DIR/tools/bin/sdkmanager"
+          fi
+
           yes | $SDKMANAGER --licenses || true
           yes | $SDKMANAGER "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
-          mkdir -p "${{ runner.android_sdk_root }}/licenses"
-          cp -r ~/.android/licenses/* "${{ runner.android_sdk_root }}/licenses/" 2>/dev/null || true
-
-      - name: Download and setup Gradle
-        run: |
-          curl -sL https://services.gradle.org/distributions/gradle-8.7-all.zip -o /tmp/gradle.zip
-          unzip -q /tmp/gradle.zip -d /tmp
-          echo "/tmp/gradle-8.7/bin" >> $GITHUB_PATH
+          
+          mkdir -p "$TARGET_SDK_DIR/licenses"
+          cp -r ~/.android/licenses/* "$TARGET_SDK_DIR/licenses/" 2>/dev/null || true
 
       - name: Build Android App
         shell: bash
