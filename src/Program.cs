@@ -142,14 +142,14 @@ namespace gInk
             frm = new CallForm(new Root());
             //frm.Root = new Root();
             frm.Root.callForm = frm;
-            if (frm.Root.FormOpacity > 0)
-                frm.Show();
+            // Always show the floating CallForm when starting (ignore FormOpacity < 0)
+            frm.Show();
             // if not applied after shown there seems to be issues with the dimensions
             frm.Top = frm.Root.FormTop;
             frm.Left = frm.Root.FormLeft;
             frm.Width = frm.Root.FormWidth;
             frm.Height = frm.Root.FormWidth;
-            frm.Opacity = frm.Root.FormOpacity / 100.0;
+            frm.Opacity = Math.Max(0.5, Math.Abs(frm.Root.FormOpacity) / 100.0); // at least 50% visible
             if (Environment.CommandLine.IndexOf("--StartInking", StringComparison.OrdinalIgnoreCase) >= 0 )
                 PostMessage((IntPtr)HWND_BROADCAST, StartInkingMsg, (IntPtr)null, (IntPtr)null); // to Myself
             foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
