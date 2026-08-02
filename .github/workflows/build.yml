@@ -20,11 +20,11 @@ jobs:
       - name: Build Solution (x86 Release - with NETFX BLE code)
         shell: cmd
         run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x86 /m /v:q
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x86 /m /v:d
       - name: Build Solution (x64 Release)
         shell: cmd
         run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x64 /m /v:q
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x64 /m /v:d
       - name: Upload Build Artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -50,10 +50,11 @@ jobs:
         run: echo "sdk.dir=${{ runner.android_sdk_root }}" > mobile-app/local.properties
       - name: Accept Android SDK Licenses
         run: |
-          yes | sdkmanager --licenses
-          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          yes | ${{ env.ANDROID_SDK_ROOT }}/cmdline-tools/latest/bin/sdkmanager --licenses
+          yes | ${{ env.ANDROID_SDK_ROOT }}/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
         env:
           ANDROID_HOME: ${{ runner.android_sdk_root }}
+          ANDROID_SDK_ROOT: ${{ runner.android_sdk_root }}
       - name: Download and setup Gradle
         run: |
           curl -sL https://services.gradle.org/distributions/gradle-8.7-all.zip -o /tmp/gradle.zip
@@ -62,7 +63,7 @@ jobs:
       - name: Build Android App
         run: |
           cd mobile-app
-          gradle assembleRelease --no-daemon
+          gradle assembleRelease --no-daemon --stacktrace
         shell: bash
       - name: Upload APK
         if: always()
