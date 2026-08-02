@@ -476,7 +476,7 @@ namespace gInk
         public bool APIRestCloseOnSnap = false;
         public bool APIRestAltPressed = false;
         public string MobileInput_ConnType = "WiFi";
-        public string MobileInput_Url = "";
+        public string MobileInput_Url = "http://0.0.0.0:8080/";
         public string MobileInput_AdbPath = "adb";
         public string MobileInput_Password = "";
         public string MobileInput_Mapping = "FullScreen";
@@ -568,8 +568,8 @@ namespace gInk
 
             APIRest = new APIRest(this);
 
-            // Mobile input WebSocket server
-            if (MobileInput_Url != "")
+            // Mobile input WebSocket server — enabled when URL is set
+            if (!string.IsNullOrEmpty(MobileInput_Url))
             {
                 try
                 {
@@ -626,7 +626,7 @@ namespace gInk
             catch { }
 
             MobileInputHandler.Instance.Initialize(null);
-            if (MobileInput_Url != "" && (MobileInput_ConnType == "WiFi" || MobileInput_ConnType == "USB"))
+            if (!string.IsNullOrEmpty(MobileInput_Url) && (MobileInput_ConnType == "WiFi" || MobileInput_ConnType == "USB"))
             {
                 try
                 {
