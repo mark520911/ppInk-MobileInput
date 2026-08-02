@@ -4,6 +4,7 @@ import android.util.Log
 import okhttp3.*
 import okio.ByteString
 import java.util.concurrent.TimeUnit
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 /**
  * WebSocket client for communicating with ppInk PC server.
@@ -87,7 +88,7 @@ class WebSocketClient(
     fun close() {
         try {
             webSocket?.close(1000, "Normal closure")
-            client?.dispatchExecutor?.executorService?.shutdownNow()
+            client?.dispatcher?.executorService?.shutdownNow()
         } catch (e: Exception) {
             Log.e(TAG, "Close error: ${e.message}")
         }
@@ -98,7 +99,10 @@ class WebSocketClient(
         if (!s.startsWith("http://") && !s.startsWith("https://"))
             s = "ws://$s"
         s = s.replace("ws://", "http://").replace("wss://", "https://")
-        @Suppress("DEPRECATION")
-        return HttpUrl.parse(s) ?: throw IllegalArgumentException("Invalid URL: $s")
+        return try {
+            s.toHttpUrl()
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Invalid URL: $s")
+        }
     }
 }
