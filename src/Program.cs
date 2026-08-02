@@ -43,6 +43,8 @@ namespace gInk
         [STAThread]
 		static void Main(string [] args)
 		{
+            try
+            {
             // force loading of local DLL 
             Console.WriteLine("version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + " built on " + Build.Timestamp);
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");  // This ensure proper String processing whatever Operating Language
@@ -150,6 +152,22 @@ namespace gInk
 
             Application.Run();
             FreeConsole();
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+                if (ex.InnerException != null)
+                    msg += "\n\nInner: " + ex.InnerException.Message;
+                try
+                {
+                    System.IO.File.WriteAllText(
+                        System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "crash.txt"),
+                        ex.ToString());
+                }
+                catch { }
+                MessageBox.Show("Startup error:\n" + msg + "\n\nFull details in crash.txt",
+                    "ppInk", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 		}
 
         private static string PrepareConfigFolder(string programFolder, string runningFolder)
