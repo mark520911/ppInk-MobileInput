@@ -11,13 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Detect Windows SDK version
-        shell: pwsh
-        run: |
-          $sdkVer = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Sort-Object Name -Descending | Select-Object -First 1).Name
-          echo "WIN_SDK_VER=$sdkVer" >> $GITHUB_ENV
-          Write-Host "Detected Windows SDK version: $sdkVer"
-
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
@@ -31,14 +24,16 @@ jobs:
       - name: Build Solution (x86 Release)
         shell: pwsh
         run: |
-          $sdkVer = $env:WIN_SDK_VER
-          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion=$sdkVer /p:PostBuildEvent= /m /v:d
+          $sdkVer = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Sort-Object Name -Descending | Select-Object -First 1).Name
+          Write-Host "Detected Windows SDK version: $sdkVer"
+          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
 
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
-          $sdkVer = $env:WIN_SDK_VER
-          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion=$sdkVer /p:PostBuildEvent= /m /v:d
+          $sdkVer = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Sort-Object Name -Descending | Select-Object -First 1).Name
+          Write-Host "Detected Windows SDK version: $sdkVer"
+          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
 
       - name: Upload Build Artifacts
         if: always()
