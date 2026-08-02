@@ -53,7 +53,7 @@ class BleServer(private val deviceName: String) {
             }
 
             override fun onCharacteristicWriteRequest(
-                clientId: Int,
+                device: BluetoothDevice,
                 characteristic: BluetoothGattCharacteristic,
                 value: ByteArray,
                 offset: Int,
@@ -65,15 +65,15 @@ class BleServer(private val deviceName: String) {
                     onDataReceived(value)
                     // Send response
                     if (valueOffset == 0) {
-                        bleServer?.sendResponse(clientId, BluetoothGatt.GATT_SUCCESS, offset, value)
+                        bleServer?.sendResponse(device, BluetoothGatt.GATT_SUCCESS, offset, value)
                     }
                 } else {
-                    bleServer?.sendResponse(clientId, BluetoothGatt.GATT_FAILURE, 0, null)
+                    bleServer?.sendResponse(device, BluetoothGatt.GATT_FAILURE, 0, null)
                 }
             }
 
             override fun onCharacteristicReadRequest(
-                clientId: Int,
+                device: BluetoothDevice,
                 characteristic: BluetoothGattCharacteristic,
                 offset: Int
             ) {
@@ -84,19 +84,19 @@ class BleServer(private val deviceName: String) {
                     } else {
                         byteArrayOf()
                     }
-                    bleServer?.sendResponse(clientId, BluetoothGatt.GATT_SUCCESS, offset, responseValue)
+                    bleServer?.sendResponse(device, BluetoothGatt.GATT_SUCCESS, offset, responseValue)
                 }
             }
 
             override fun onDescriptorWriteRequest(
-                clientId: Int,
+                device: BluetoothDevice,
                 descriptor: BluetoothGattDescriptor,
                 value: ByteArray,
                 offset: Int,
                 valueOffset: Int,
                 properties: Int
             ) {
-                bleServer?.sendResponse(clientId, BluetoothGatt.GATT_SUCCESS, offset, value)
+                bleServer?.sendResponse(device, BluetoothGatt.GATT_SUCCESS, offset, value)
             }
         })
 
