@@ -40,9 +40,23 @@ namespace gInk
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
-		static void Main(string [] args)
-		{
+                [STAThread]
+        static void Main(string[] args)
+        {
+            try
+            {
+                RealMain(args);
+            }
+            catch (Exception ex)
+            {
+                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ppInk.log");
+                try { File.AppendAllText(logPath, "FATAL: " + ex + Environment.NewLine); } catch { }
+                MessageBox.Show("Startup error:\n" + ex.Message + "\n\nLog: " + logPath, "ppInk", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        static void RealMain(string[] args)
+        {
             // force loading of local DLL 
             Console.WriteLine("version " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + " built on " + Build.Timestamp);
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");  // This ensure proper String processing whatever Operating Language
