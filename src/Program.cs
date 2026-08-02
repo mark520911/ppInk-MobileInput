@@ -142,14 +142,18 @@ namespace gInk
             frm = new CallForm(new Root());
             //frm.Root = new Root();
             frm.Root.callForm = frm;
-            // Always show the floating CallForm when starting (ignore FormOpacity < 0)
+            // Always show the floating CallForm when starting
             frm.Show();
             // if not applied after shown there seems to be issues with the dimensions
             frm.Top = frm.Root.FormTop;
             frm.Left = frm.Root.FormLeft;
-            frm.Width = frm.Root.FormWidth;
-            frm.Height = frm.Root.FormWidth;
-            frm.Opacity = Math.Max(0.5, Math.Abs(frm.Root.FormOpacity) / 100.0); // at least 50% visible
+            frm.Width = Math.Max(frm.Root.FormWidth, 96);
+            frm.Height = Math.Max(frm.Root.FormWidth, 96);
+            frm.Opacity = Math.Max(0.7, Math.Abs(frm.Root.FormOpacity) / 100.0); // at least 70% visible
+            // Diagnostic: show a message box so user knows program started
+            MessageBox.Show("ppInk started. Click OK then look for the floating button."
+                + "\nFile: " + Path.GetFileName(frm.Root.callForm.ToString()),
+                "ppInk", MessageBoxButtons.OK, MessageBoxIcon.Information);
             if (Environment.CommandLine.IndexOf("--StartInking", StringComparison.OrdinalIgnoreCase) >= 0 )
                 PostMessage((IntPtr)HWND_BROADCAST, StartInkingMsg, (IntPtr)null, (IntPtr)null); // to Myself
             foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
