@@ -9,9 +9,15 @@ jobs:
     name: Build ppInk (C#)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      # 配置 Visual Studio 最新的 MSBuild 工具链
+      - name: Detect Windows SDK version
+        shell: pwsh
+        run: |
+          $sdkVer = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Sort-Object Name -Descending | Select-Object -First 1).Name
+          echo "WIN_SDK_VER=$sdkVer" >> $GITHUB_ENV
+          Write-Host "Detected Windows SDK version: $sdkVer"
+
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
@@ -19,21 +25,26 @@ jobs:
         uses: NuGet/setup-nuget@v2
 
       - name: Restore NuGet packages
+        shell: cmd
         run: nuget restore ppInk.sln
 
-      # 编译 x86 版本：传入 TargetPlatformVersion 以保障 WinRT API (BLE/Gatt) 的编译支持
-      - name: Build Solution (x86 Release)
+      - name: Build Solution (x86 Release - with NETFX BLE code)
+        shell: cmd
         run: |
-          msbuild ppInk.sln /p:Configuration=Release /p:Platform="x86" /p:TargetPlatformVersion=10.0.19041.0 /m /v:m
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion=%WIN_SDK_VER% /m /v:d
+        env:
+          WIN_SDK_VER: ${{ env.WIN_SDK_VER }}
 
-      # 编译 x64 版本
       - name: Build Solution (x64 Release)
+        shell: cmd
         run: |
-          msbuild ppInk.sln /p:Configuration=Release /p:Platform="x64" /p:TargetPlatformVersion=10.0.19041.0 /m /v:m
+          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion=%WIN_SDK_VER% /m /v:d
+        env:
+          WIN_SDK_VER: ${{ env.WIN_SDK_VER }}
 
       - name: Upload Build Artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ppInk-windows
           path: |
@@ -44,10 +55,10 @@ jobs:
     name: Build Android App
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -57,38 +68,34 @@ jobs:
         with:
           api-level: 34
 
-      # 使用官方 setup-gradle 自动配置 Gradle 依赖与环境
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
       - name: Create local.properties
-        run: echo "sdk.dir=$ANDROID_HOME" > mobile-app/local.properties
+        run: echo "sdk.dir=${{ runner.android_sdk_root }}" > mobile-app/local.properties
 
       - name: Accept Android SDK Licenses
+        shell: bash
         run: |
-          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
-          if [ ! -f "$SDKMANAGER" ]; then
-            SDKMANAGER="$ANDROID_HOME/tools/bin/sdkmanager"
-          fi
-          yes | $SDKMANAGER --licenses || true
-          yes | $SDKMANAGER "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
+          export ANDROID_HOME=${{ runner.android_sdk_root }}
+          export ANDROID_SDK_ROOT=${{ runner.android_sdk_root }}
+          yes | sdkmanager --licenses
+          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          mkdir -p "$ANDROID_HOME/licenses"
+          cp -r ~/.android/licenses/* "$ANDROID_HOME/licenses/" 2>/dev/null || true
+
+      - name: Download and setup Gradle
+        run: |
+          curl -sL https://services.gradle.org/distributions/gradle-8.7-all.zip -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          echo "/tmp/gradle-8.7/bin" >> $GITHUB_PATH
 
       - name: Build Android App
         shell: bash
         run: |
           cd mobile-app
-          # 优先尝试使用系统的 gradle 编译，避免 gradlew 下载过程丢失可执行文件
-          if gradle assembleRelease --no-daemon --stacktrace; then
-            echo "System gradle build succeeded."
-          else
-            echo "Fallback to gradlew..."
-            chmod +x gradlew
-            ./gradlew assembleRelease --no-daemon --stacktrace
-          fi
+          gradle assembleRelease --no-daemon --stacktrace
 
       - name: Upload APK
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ppInk-android
           path: mobile-app/app/build/outputs/apk/release/
@@ -98,7 +105,7 @@ jobs:
     name: Syntax Verification (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Check XML validity
         run: |
