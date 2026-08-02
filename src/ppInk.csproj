@@ -98,8 +98,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.WindowsRuntime" />
-    <SDKReference Include="Windows,version=$(TargetPlatformVersion)" />
+    <Reference Include="System.Runtime.WindowsRuntime" Condition="'$(IncludeWindowsSdk)' != 'false'" />
+    <SDKReference Include="Windows,version=$(TargetPlatformVersion)" Condition="'$(IncludeWindowsSdk)' != 'false'" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
