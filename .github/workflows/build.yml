@@ -26,18 +26,14 @@ jobs:
         run: |
           $sdkVer = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Sort-Object Name -Descending | Select-Object -First 1).Name
           Write-Host "Detected Windows SDK version: $sdkVer"
-          $msbuild = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe"
-          $args = @("src\ppInk.csproj", "/p:Configuration=Release", "/p:Platform=x86", "/p:TargetPlatformVersion=$sdkVer", "/p:PostBuildEvent=", "/m", "/v:d")
-          & $msbuild $args
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
 
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
           $sdkVer = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\Include" | Sort-Object Name -Descending | Select-Object -First 1).Name
           Write-Host "Detected Windows SDK version: $sdkVer"
-          $msbuild = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe"
-          $args = @("src\ppInk.csproj", "/p:Configuration=Release", "/p:Platform=x64", "/p:TargetPlatformVersion=$sdkVer", "/p:PostBuildEvent=", "/m", "/v:d")
-          & $msbuild $args
+          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
 
       - name: Upload Build Artifacts
         if: always()
