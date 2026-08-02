@@ -316,7 +316,7 @@ namespace gInk
 
         public bool ButtonClick_For_LineStyle = false;
 
-        public bool DirectX = true;
+        public bool DirectX = false; // disabled by default, needs DirectX runtime installed
 
         public int ToolSelected = Tools.Hand;        // indicates which tool (Hand,Line,...) is currently selected
         public int FilledSelected = 0;      // indicates which filling (None, Selected color, ...) is currently select

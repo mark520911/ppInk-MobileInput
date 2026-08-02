@@ -28,15 +28,6 @@ jobs:
         shell: cmd
         run: nuget restore src\ppInk.csproj -PackagesDirectory "src\packages"
 
-      - name: Build Solution (x86 Release)
-        shell: pwsh
-        run: |
-          Write-Host "Building x86 Release..."
-          msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:PostBuildEvent= /p:IncludeWindowsSdk=false /m /v:d
-          # Backup x86 exe before x64 build overwrites it
-          Copy-Item ppink\ppInk.exe ppink\ppInk.x86.exe -Force
-          Copy-Item ppink\ppInk.pdb ppink\ppInk.x86.pdb -ErrorAction SilentlyContinue -Force
-
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
@@ -46,7 +37,6 @@ jobs:
       - name: Fix runtime dependencies
         shell: pwsh
         run: |
-          # App.config bindingRedirect codeBase href expects local.microsoft.ink.dll
           Copy-Item ppink\Microsoft.Ink.dll ppink\local.microsoft.ink.dll -Force
 
       - name: Package x64 distribution
@@ -54,16 +44,9 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path dist/x64
           Copy-Item ppink/* dist/x64/ -Recurse -Force
+          Remove-Item dist/x64/ppInk.x86.exe -Force -ErrorAction SilentlyContinue
+          Remove-Item dist/x64/ppInk.x86.pdb -Force -ErrorAction SilentlyContinue
           Compress-Archive -Path dist/x64/* -DestinationPath dist/ppInk-x64.zip -Force
-
-      - name: Package x86 distribution
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path dist/x86
-          Copy-Item ppink/* dist/x86/ -Recurse -Force
-          # Replace with x86 exe
-          Copy-Item ppink/ppInk.x86.exe dist/x86/ppInk.exe -Force
-          Compress-Archive -Path dist/x86/* -DestinationPath dist/ppInk-x86.zip -Force
 
       - name: Upload Build Artifacts
         if: always()
