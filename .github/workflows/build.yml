@@ -31,31 +31,31 @@ jobs:
       - name: Build Solution (x86 Release)
         shell: pwsh
         run: |
-          # Detect installed Windows SDK version
+          # Detect installed Windows SDK version (prefer 10.0.22621.0 for .NET 4.8 compat)
           $sdkPath = "C:\Program Files (x86)\Windows Kits\10\Include"
           $sdkVer = "10.0.22621.0"
           if (Test-Path $sdkPath) {
             $versions = Get-ChildItem $sdkPath | Where-Object { $_.Name -match '^10\.0\.\d+' } | Sort-Object Name -Descending
             if ($versions.Count -gt 0) {
-              $sdkVer = $versions[0].Name
+              $preferred = $versions | Where-Object { $_.Name -eq "10.0.22621.0" }
+              $sdkVer = if ($preferred) { "10.0.22621.0" } else { $versions[0].Name }
             }
           }
           Write-Host "Using Windows SDK version: $sdkVer"
-          Write-Host "Available SDK versions:"
-          Get-ChildItem $sdkPath | Where-Object { $_.Name -match '^10\.0\.\d+' } | Sort-Object Name -Descending | ForEach-Object { Write-Host "  $($_.Name)" }
           Write-Host "Building x86 Release..."
           msbuild src\ppInk.csproj /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion="$sdkVer" /p:PostBuildEvent= /m /v:d
 
       - name: Build Solution (x64 Release)
         shell: pwsh
         run: |
-          # Detect installed Windows SDK version
+          # Detect installed Windows SDK version (prefer 10.0.22621.0 for .NET 4.8 compat)
           $sdkPath = "C:\Program Files (x86)\Windows Kits\10\Include"
           $sdkVer = "10.0.22621.0"
           if (Test-Path $sdkPath) {
             $versions = Get-ChildItem $sdkPath | Where-Object { $_.Name -match '^10\.0\.\d+' } | Sort-Object Name -Descending
             if ($versions.Count -gt 0) {
-              $sdkVer = $versions[0].Name
+              $preferred = $versions | Where-Object { $_.Name -eq "10.0.22621.0" }
+              $sdkVer = if ($preferred) { "10.0.22621.0" } else { $versions[0].Name }
             }
           }
           Write-Host "Using Windows SDK version: $sdkVer"
