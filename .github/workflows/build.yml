@@ -29,18 +29,14 @@ jobs:
         run: nuget restore ppInk.sln
 
       - name: Build Solution (x86 Release - with NETFX BLE code)
-        shell: cmd
+        shell: pwsh
         run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion=%WIN_SDK_VER% /m /v:d
-        env:
-          WIN_SDK_VER: ${{ env.WIN_SDK_VER }}
+          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x86 /p:TargetPlatformVersion=$env:WIN_SDK_VER /m /v:d
 
       - name: Build Solution (x64 Release)
-        shell: cmd
+        shell: pwsh
         run: |
-          "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion=%WIN_SDK_VER% /m /v:d
-        env:
-          WIN_SDK_VER: ${{ env.WIN_SDK_VER }}
+          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe" ppInk.sln /p:Configuration=Release /p:Platform=x64 /p:TargetPlatformVersion=$env:WIN_SDK_VER /m /v:d
 
       - name: Upload Build Artifacts
         if: always()
@@ -76,8 +72,8 @@ jobs:
         run: |
           export ANDROID_HOME=${ANDROID_HOME:-$ANDROID_SDK_ROOT}
           export ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-$ANDROID_HOME}
-          yes | sdkmanager --licenses
-          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          yes | sdkmanager --licenses || true
+          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
           mkdir -p "$ANDROID_HOME/licenses"
           cp -r ~/.android/licenses/* "$ANDROID_HOME/licenses/" 2>/dev/null || true
 
