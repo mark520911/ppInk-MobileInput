@@ -770,7 +770,7 @@ namespace gInk
                 var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
                 foreach (var ip in host.AddressList)
                 {
-                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !ip.IsLoopback())
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !System.Net.IPAddress.IsLoopback(ip))
                         return ip.ToString();
                 }
             }
