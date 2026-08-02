@@ -79,7 +79,8 @@ namespace gInk
 
         private void CallForm_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawImage(backImg, ClientRectangle);
+            if (backImg != null)
+                e.Graphics.DrawImage(backImg, ClientRectangle);
         }
     }
 }
