@@ -233,7 +233,7 @@ namespace gInk
             if (this.InputML.Visible)
                 this.InputML.Select();
             else
-                this.InputML.Select();
+                this.InputSL.Select();
         }
     }
 }

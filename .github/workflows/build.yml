@@ -11,6 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Write build timestamp
+        shell: pwsh
+        run: |
+          $ts = (Get-Date -Format 'dd/MM/yyyy HH:mm:ss')
+          Write-Host "Build timestamp: $ts"
+          "namespace gInk { public static class Build { public static string Timestamp = `"$ts`".Substring(0,16);}}" | Out-File -Encoding UTF8 src/BuildTimestamp.cs
+
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
